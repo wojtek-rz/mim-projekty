@@ -18,6 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
+ (* wersja z 22 list. 21:52*)
+
  type set =
  | Empty
  | Node of set * (int*int) * set * int * int
@@ -35,22 +37,20 @@ let height = function
 let size = function
 | Node (_, _, _,_, s) -> s
 | Empty -> 0
-let (+) = fun a b ->
-    if a+b=max_int then max_int
-    else if a>0 && b>0 && (a+b)<0 then max_int
-    else a+b
-;;
-let (-) = fun a b -> 
-    if b=min_int then (1+a)+max_int 
-    else if a=max_int && b<0 then max_int
-    else if a>0&& b<0 && a-b<0 then max_int
-    else a-b
-let between_range (k1,k2) = k2-k1+1
+
+let my_sum a b =
+    if a>0 && b>0 && a+b<0 then max_int
+    else a+b;;
+let my_sum3 a b c=
+    my_sum c (my_sum a b)
+let between_range (k1,k2) = 
+    if k1<=0 && k2>=0 && k2-k1+1<=0 then max_int (* jesli k1 > 0 wtedy k2-k1+1 zawsze bedzie mniejsze od max_int*)
+    else k2-k1+1
 
 (*  Creates new node with son l, value k and right son r.
     All elements in l must be lower than k and all elements in r higher.set
     l and r must be balanced*)
-let make l k r = Node (l, k, r, max (height l) (height r) + 1, size l + size r + between_range k)
+let make l k r = Node (l, k, r, max (height l) (height r) + 1, my_sum3 (size l) (size r) (between_range k))
 
 let bal l k r =
  let hl = height l in
@@ -75,7 +75,7 @@ let bal l k r =
              make (make l k rll) rlk (make rlr rk rr)
          | Empty -> assert false)
    | Empty -> assert false
- else Node (l, k, r, max hl hr + 1, between_range k + size l + size r)
+ else Node (l, k, r, max hl hr + 1, my_sum3 (between_range k) (size l) (size r))
 
  (*find minimum element*)
 let rec min_elt = function
@@ -172,42 +172,16 @@ let sum_when_intersecting cmp (x1,x2) tree =
     let rec find_max_r x2 = function
         | Empty -> x2
         | Node(l, (v1,v2), r, _,_) -> 
-            if v1-1<=x2 && x2<=v2 then v2
+            if (v1-1<=x2 || v1<=x2+1) && x2<=v2 then v2
             else if x2<v1 then find_max_r x2 l
             else find_max_r x2 r
     in let rec find_min_r x1 = function
         | Empty -> x1
         | Node(l, (v1,v2), r, _,_) -> 
-            if v1<=x1 && x1<=v2+1 then v1
+            if v1<=x1 && (x1-1<=v2||x1<=v2+1) then v1
             else if x1<v1 then find_min_r x1 l
             else find_min_r x1 r
     in (find_min_r x1 tree), (find_max_r x2 tree)
-    (* | Empty -> (x1,x2)
-    | Node(l, (v1, v2), r, _,_) ->
-        let c = cmp (x1,x2) (v1,v2) in
-        if c = 0 then (* kiedy maja czesc wspolna*)
-            if x2>v2 && x1<v1 then (* napotkany wierzcholek v zawiera sie w x z obu stron*)
-                let (ls1,ls2) = (sum_when_intersecting cmp (x1,v1) l)
-                and (rs1,rs2) = (sum_when_intersecting cmp (v2,x2) r)
-                in (ls1, rs2)
-            else if x2>v2 then (* część x znajduje się z prawej strony v*)
-                let (rs1,rs2) = (sum_when_intersecting cmp (v2,x2) r)
-                in (v1, rs2)
-            else if x1<v1 then (* czesc x znajduje sie z lewej strony v*)
-                let (ls1,ls2) = (sum_when_intersecting cmp (x1,v1) l)
-                in (ls1, v2)
-            else (v1,v2)
-        else if c<0 then (* calosc x znajduje sie po lewej stronie v*)
-            if x2+1=v1 then 
-                let (ls1,_) = (sum_when_intersecting cmp (x1,x2) l)
-                in (ls1, v2)
-            else sum_when_intersecting cmp (x1,x2) l
-        else (* calosc x znajduje sie po prawej stronie v*)
-            (* let a =Printf.printf "Waruneczek %d %d" (v2+1) (x1) in *)
-            if v2+1=x1 then
-                let (_,rs2) = (sum_when_intersecting cmp (x1,x2) r)
-                in (v1, rs2)
-            else sum_when_intersecting cmp (x1,x2) r *)
 
 (* add interval (x1,x2) to set, no assupmtions needed*)
 let add (x1,x2) { cmp = cmp; set = set } =
@@ -242,25 +216,23 @@ let fold f { cmp = cmp; set = set } acc =
 let elements { set = set } = 
  let rec loop acc = function
      Empty -> acc
-   | Node(l, k, r, _, _) -> loop (k :: loop acc r) l in
+   | Node(l, k, r, _, s) -> loop (k :: loop acc r) l in
  loop [] set
+
 
  (* calculates number of values that are below x in a given set*)
  let below x {cmp=cmp; set=set} = 
     let rec look x = function
     | Node(l, (v1,v2), r, _, s) ->
         let c = cmp (x,x) (v1,v2) in
-        if c=0 then size l + ((x - v1) + 1)
+        if c=0 then 
+            my_sum (size l) (between_range (v1,x))
         else if c<0 then
             look x l
-        else size l + between_range (v1,v2) + look x r
+        else my_sum3 (size l) (between_range (v1,v2)) (look x r)
     | Empty -> 0
     in look x set
-
+;;
 
 (* tests!*)
-
-(* let a = empty |>add (2, 5) |> add (7, 10) |> add (12, 20) |> add (0, 0);;
-let {cmp=cmp;set=set_a} =  a;;
-elements a;;
-sum_when_intersecting cmp (6,6) set_a;; *)
+below max_int (add (0, max_int) empty)
