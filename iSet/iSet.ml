@@ -3,7 +3,7 @@
 (*                                              *)
 (*  licencja GNU Lesser General Public na dole  *)
 
-(* type t consist of: left subtree, interval, right subtree, max height, number of elements in interval and below in set*)
+(* type t consist of: left subtree, interval, right subtree, max height, number of elements in an interval and below in whole set*)
 type t =Empty | Node of t * (int*int) * t * int * int
 
 (*                       small helpers                       *)
@@ -23,7 +23,7 @@ let my_sum a b =
 let my_sum3 a b c=
     my_sum c (my_sum a b)
 
-(* to calculate number of elements in range sately*)
+(* to calculate number of elements in a range safely*)
 let between_range (k1,k2) = 
     if k1<=0 && k2>=0 && k2-k1+1<=0 then max_int (* if k1 > 0 then k2-k1+1 will always be lower than max_int, we don't have to check that*)
     else k2-k1+1
@@ -31,12 +31,12 @@ let between_range (k1,k2) =
 let cmp = (fun (x_start,x_end) (y_start,y_end) -> 
     if y_start > x_end then -1 (* first one larger*)
     else if y_end < x_start then 1 (*second one larger*)
-    else 0 (*share common part ((4,5) (5,6) also do)*))
+    else 0 (*share common part; ((4,5) (5,6) also do)*))
 (*                       large helpers                       *)
 (* ----------------------------------------------------------*)
 
-(*  Creates new node with son l, value k and right son r.
-    All elements in l must be lower than k and all elements in r higher.set
+(*  Creates a new node with son l, value k and right son r.
+    all values in l < k < all values in r
     l and r must be balanced*)
 let make l k r = Node (l, k, r, max (height l) (height r) + 1, my_sum3 (size l) (size r) (between_range k))
 
@@ -78,7 +78,7 @@ let rec remove_min_elt = function
  | Empty -> invalid_arg "PSet.remove_min_elt"
 
  (* Merges two trees t1 and t2 into one
-    Assuming relative height between t1 and t2 <= 2*)
+    Assuming relative height between t1 and t2 <= 2 *)
 let merge t1 t2 =
  match t1, t2 with
  | Empty, _ -> t2
@@ -88,7 +88,7 @@ let merge t1 t2 =
      bal t1 k (remove_min_elt t2)
 
 
-(*  Adds one interval with the rest of the tree
+(*  Adds one interval to the rest of the tree
     interval must be disjoint with all intervals in tree
     function unchanged*)
 let rec add_one x = function
@@ -138,7 +138,7 @@ let is_empty x = (x = Empty)
 
 (*  Splits tree into 2 subtrees l and r
     all elements in l < x < all elements in r
-    resulting subtress are balanced (but their heights may be different)*)
+    resulting subtress are balanced (but their heights may be different)  *)
 let split x set =
  let rec loop x = function
      Empty ->
@@ -171,7 +171,7 @@ let remove (x1, x2) set =
         join lset (min_elt rset) (remove_min_elt rset)
 
 
-(* add interval (x1,x2) to set, no assupmtions needed*)
+(* adds interval (x1,x2) to set, no assupmtions needed*)
 let add (x1,x2) set =
     let s1, s2 = sum_when_intersecting (x1,x2) set
     in let nset = remove (s1,s2) set
