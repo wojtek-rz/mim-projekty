@@ -1,13 +1,14 @@
 (*==========================SORTOWANIE TOPOLOGICZNE============================*)
 (*                        autor: Wojciech Rzepliński                           *)
-(*                     reviewer: Florek Ficek                                  *)
+(*                     reviewer: Florian Ficek                                 *)
+(*20.12.2021r.*)
 
 exception Cykliczne;;
 type state  = Visited | Visiting | Unvisited;;
 let topol (graph_list : ('a * 'a list) list)  =
     let sorted = ref [] in  (* we fill the list from the end to start*)
     let colors = ref (List.fold_left (fun mapa (w,_) -> PMap.add w Unvisited mapa) (PMap.empty) (graph_list)) in 
-    let graph = (List.fold_left (fun m (w,x) -> try PMap.add w (x@( PMap.find w m)) m with Not_found -> PMap.add w x m)) (PMap.empty) (graph_list) in
+    let graph = (List.fold_left (fun m (w,x) -> try PMap.add w (x@( PMap.find w m )) m with Not_found -> PMap.add w x m)) (PMap.empty) (graph_list) in
     let rec dfs  vertex = 
         let kolor_wierzcholka = 
             try
@@ -25,7 +26,7 @@ let topol (graph_list : ('a * 'a list) list)  =
             List.iter (fun w -> dfs w) (PMap.find vertex graph);
             (* change state of vertex to visited as we are leaving*)
             colors := (PMap.add vertex Visited !colors);
-            (* and add it to the sorted list, so he don't have unvisited dependencies*)
+            (* and add it to the sorted list, because it doesn't have unvisited dependencies*)
             sorted := vertex::(!sorted);
         end
     in List.iter (fun (w,_)-> dfs w) graph_list; !sorted
