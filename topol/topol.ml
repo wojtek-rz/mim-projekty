@@ -1,6 +1,5 @@
 (*==========================SORTOWANIE TOPOLOGICZNE============================*)
 (*                        autor: Wojciech Rzepliński                           *)
-(*                     reviewer: Florian Ficek                                 *)
 (*20.12.2021r.*)
 
 exception Cykliczne;;
