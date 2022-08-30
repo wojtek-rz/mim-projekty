@@ -1,0 +1,27 @@
+plugins {
+    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id 'java'
+}
+
+group 'org.example'
+version '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+tasks.named("shadowJar"){
+    manifest {
+        attributes('Main-Class': 'org.example.Main')
+    }
+}
+
+dependencies {
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.3'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.13.3'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.13.3'
+}
+
+test {
+    useJUnitPlatform()
+}

@@ -1,0 +1,55 @@
+Spekulant2 nic nie robi - jedynie testuje wczytywanie. Liczby podane w 
+opisie są przybliżone - mogą różnić się o +/- 0.01
+
+
+----------DZIEŃ 1----------
+
+Robotnik1 - produkuje 100 ubrań
+Robotnik2 - produkuje 130 ubrań (za mało ubrań, jest rzemieślnikiem)
+
+Robotnik2 ma więcej diamentów niż robotnik 1, giełda jest kapitalistyczna
+zatem robotnik2 ma pierwszeństwo na giełdzie.
+
+Średnie z ostatnich 2 dni:
+Jedzenie: 0.5
+Ubrania : 5.3
+
+Robotnik2 sprzedaje 100 ubrań @4.77 spekulantowi 1
+Robotnik2 kupuje 100 jedzenia @0.55 od spekulanta 1
+Robotnik1 kupuje 17 ubrań @5.83 od spekulanta 1
+Robotnik2 sprzedaje 30 ubrań @5.3 giełdzie
+Robotnik1 sprzedaje 100 ubrań @5.3 giełdzie
+
+
+----------DZIEŃ 2----------
+
+Robotnik1 - produkuje 80 ubrań (za mało ubrań)
+Robotnik2 - produkuje 130 ubrań (za mało ubrań, jest rzemieślnikiem)
+
+Robotnik2 ma więcej diamentów niż robotnik1, giełda jest kapitalistyczna
+zatem robotnik2 ma pierwszeństwo na giełdzie.
+
+Średnie z ostatnich 2 dni:
+Ubrania: 5.112
+
+Robotnik2 sprzedaje 100 ubrań @4.6 spekulantowi 1
+Robotnik1 kupuje 94 ubrania @5.6232 od spekulanta 1
+Robotnik2 sprzedaje 30 ubrań @4.77 giełdzie
+Robotnik1 sprzedaje 80 ubrań @4.77 giełdzie
+
+Robotnik1 głoduje
+
+
+----------DZIEŃ 3----------
+Robotnik1 - produkuje 30 programów (za mało ubrań, głodny, produkcja innego produktu byłaby ujemna)
+Robotnik2 - jest oszczędny z limit_diamentow = 1000, zebrał 1384.18 diamentów, uczy się
+	    i rozwija w karierze rzemieślnika do poziomu 2
+
+Średnie z ostatnich 2 dni:
+Ubrania: 5.01
+Programy: 1.3
+
+Robotnik1 sprzedaje 30 programów @1.17 spekulantowi 1
+Robotnik 1 kupuje 76 ubrań @5.511 od spekulanta 1
+
+Robotnik1 głoduje drugi dzień

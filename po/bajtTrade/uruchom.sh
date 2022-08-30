@@ -1,0 +1,1 @@
+java -jar build/libs/bajtTrade-1.0-all.jar $1 $2

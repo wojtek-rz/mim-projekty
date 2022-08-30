@@ -1,0 +1,13 @@
+/**
+@mainpage Dokumentacja zadania telefony
+
+### Treść zadania
+
+Uwaga: aktualna treść zadania znajduje się w [Moodle](https://moodle.mimuw.edu.pl).
+
+### Opis programu
+
+Moduł zawiera zestaw operacji na numerach telefonów, w szczególności operację przekierowania pewnych numerów na inne.
+Struktury użyte w module zawierają funkcje służące do ich inicjowania i usuwania z pamięci.
+Struktura do przechowywania przekierowań bazuje na drzewie typu trie.
+*/

@@ -1,2 +1,1 @@
-# projekty-wpf
-Prace domowe ze Wstępu do Programowania potok funkcyjny
+Projekty i prace domowe ze studiów na MIM UW.
