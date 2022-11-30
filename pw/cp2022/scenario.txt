@@ -1,0 +1,100 @@
+Worker 4 tries to enter the workshop and occupy workplace 4
+Worker 2 tries to enter the workshop and occupy workplace 2
+Worker 1 tries to enter the workshop and occupy workplace 1
+Worker 3 tries to enter the workshop and occupy workplace 3
+Worker 2 now occupies workplace 2
+Worker 4 now occupies workplace 4
+Worker 1 now occupies workplace 1
+Worker 3 now occupies workplace 3
+Worker 12 tries to enter the workshop and occupy workplace 6
+Worker 12 now occupies workplace 6
+Worker 13 tries to enter the workshop and occupy workplace 7
+Worker 13 now occupies workplace 7
+Worker 11 tries to enter the workshop and occupy workplace 5
+Worker 11 now occupies workplace 5
+Worker 12 starts using workplace 6
+Worker 11 starts using workplace 5
+Worker 13 starts using workplace 7
+Worker 14 tries to enter the workshop and occupy workplace 8
+Worker 14 now occupies workplace 8
+Worker 14 starts using workplace 8
+Worker 102 tries to enter the workshop and occupy workplace 2
+Worker 101 tries to enter the workshop and occupy workplace 1
+Worker 104 tries to enter the workshop and occupy workplace 4
+Worker 103 tries to enter the workshop and occupy workplace 3
+Worker 12 stops using workplace 6
+Worker 11 stops using workplace 5
+Worker 14 stops using workplace 8
+Worker 13 stops using workplace 7
+Worker 11 tries to switch its workplace to workplace 1
+Worker 14 tries to switch its workplace to workplace 4
+Worker 13 tries to switch its workplace to workplace 3
+Worker 12 tries to switch its workplace to workplace 2
+Worker 4 starts using workplace 4
+Worker 4 stops using workplace 4
+Worker 4 tries to switch its workplace to workplace 1
+Worker 14 now occupies workplace 4
+Worker 3 starts using workplace 3
+Worker 3 stops using workplace 3
+Worker 3 tries to switch its workplace to workplace 4
+Worker 13 now occupies workplace 3
+Worker 2 starts using workplace 2
+Worker 2 stops using workplace 2
+Worker 2 tries to switch its workplace to workplace 3
+Worker 12 now occupies workplace 2
+Worker 1 starts using workplace 1
+Worker 1 stops using workplace 1
+Worker 1 tries to switch its workplace to workplace 2
+Worker 4 now occupies workplace 1
+Worker 14 starts using workplace 4
+Worker 14 stops using workplace 4
+Worker 14 leaves the workshop
+Worker 3 now occupies workplace 4
+Worker 3 starts using workplace 4
+Worker 13 starts using workplace 3
+Worker 3 stops using workplace 4
+Worker 13 stops using workplace 3
+Worker 13 leaves the workshop
+Worker 3 tries to switch its workplace to workplace 1
+Worker 2 now occupies workplace 3
+Worker 2 starts using workplace 3
+Worker 12 starts using workplace 2
+Worker 104 now occupies workplace 4
+Worker 2 stops using workplace 3
+Worker 12 stops using workplace 2
+Worker 2 tries to switch its workplace to workplace 4
+Worker 12 leaves the workshop
+Worker 103 now occupies workplace 3
+Worker 1 now occupies workplace 2
+Worker 1 starts using workplace 2
+Worker 4 starts using workplace 1
+Worker 1 stops using workplace 2
+Worker 4 stops using workplace 1
+Worker 1 leaves the workshop
+Worker 4 leaves the workshop
+Worker 102 now occupies workplace 2
+Worker 11 now occupies workplace 1
+Worker 102 starts using workplace 2
+Worker 11 starts using workplace 1
+Worker 11 stops using workplace 1
+Worker 102 stops using workplace 2
+Worker 102 leaves the workshop
+Worker 11 leaves the workshop
+Worker 3 now occupies workplace 1
+Worker 3 starts using workplace 1
+Worker 104 starts using workplace 4
+Worker 3 stops using workplace 1
+Worker 104 stops using workplace 4
+Worker 3 leaves the workshop
+Worker 104 leaves the workshop
+Worker 101 now occupies workplace 1
+Worker 101 starts using workplace 1
+Worker 2 now occupies workplace 4
+Worker 2 starts using workplace 4
+Worker 103 starts using workplace 3
+Worker 101 stops using workplace 1
+Worker 2 stops using workplace 4
+Worker 103 stops using workplace 3
+Worker 2 leaves the workshop
+Worker 101 leaves the workshop
+Worker 103 leaves the workshop
