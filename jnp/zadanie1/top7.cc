@@ -1,3 +1,7 @@
+//
+// Created by Antoni Grodowski, Krzysztof Olszak and Wojciech Rzepliński
+//
+
 #include <iostream>
 #include <unordered_map>
 #include <unordered_set>

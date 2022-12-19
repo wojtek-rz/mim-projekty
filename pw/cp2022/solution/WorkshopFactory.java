@@ -19,8 +19,7 @@ public final class WorkshopFactory {
     public final static Workshop newWorkshop(
             Collection<Workplace> workplaces
     ) {
-        // FIXME: implement
-        return new cp2022.solution.Workshop(workplaces);
+        return new cp2022.solution.ConcurrentWorkshop(workplaces);
     }
 
 

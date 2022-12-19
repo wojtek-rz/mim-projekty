@@ -1,3 +1,7 @@
+//
+// Created by Wojciech Rzepliński and Jan Wangrat
+//
+
 #ifndef HASH_H
 #define HASH_H
 
