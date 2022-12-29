@@ -1,1 +1,0 @@
-/usr/bin/gcc -g -Wall -Wextra -Wno-sign-compare -g -rdynamic CMakeFiles/pipeline.dir/pipeline.c.o -o pipeline  liberr.a libpipeline-utils.a liberr.a 

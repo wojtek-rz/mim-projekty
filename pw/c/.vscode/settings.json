@@ -1,9 +1,0 @@
-{
-    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
-    "files.associations": {
-        "types.h": "c",
-        "stdlib.h": "c",
-        "wait.h": "c",
-        "stdio.h": "c"
-    }
-}
