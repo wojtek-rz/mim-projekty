@@ -1,0 +1,1 @@
+/usr/bin/gcc -g -Wall -Wextra -Wno-sign-compare -g -rdynamic CMakeFiles/parent-fifo.dir/parent-fifo.c.o -o parent-fifo  liberr.a 

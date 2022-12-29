@@ -1,0 +1,1 @@
+/usr/bin/gcc -g -Wall -Wextra -Wno-sign-compare -g -rdynamic CMakeFiles/parent-dup.dir/parent-dup.c.o -o parent-dup  liberr.a 

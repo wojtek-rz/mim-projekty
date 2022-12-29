@@ -1,0 +1,47 @@
+[
+{
+  "directory": "/home/wojtek/MIM-projekty/pw/c/build",
+  "command": "/usr/bin/gcc   -g -Wall -Wextra -Wno-sign-compare -g -std=gnu11 -o CMakeFiles/err.dir/err.c.o -c /home/wojtek/MIM-projekty/pw/c/err.c",
+  "file": "/home/wojtek/MIM-projekty/pw/c/err.c"
+},
+{
+  "directory": "/home/wojtek/MIM-projekty/pw/c/build",
+  "command": "/usr/bin/gcc   -g -Wall -Wextra -Wno-sign-compare -g -std=gnu11 -o CMakeFiles/child-pipe.dir/child-pipe.c.o -c /home/wojtek/MIM-projekty/pw/c/child-pipe.c",
+  "file": "/home/wojtek/MIM-projekty/pw/c/child-pipe.c"
+},
+{
+  "directory": "/home/wojtek/MIM-projekty/pw/c/build",
+  "command": "/usr/bin/gcc   -g -Wall -Wextra -Wno-sign-compare -g -std=gnu11 -o CMakeFiles/parent-pipe.dir/parent-pipe.c.o -c /home/wojtek/MIM-projekty/pw/c/parent-pipe.c",
+  "file": "/home/wojtek/MIM-projekty/pw/c/parent-pipe.c"
+},
+{
+  "directory": "/home/wojtek/MIM-projekty/pw/c/build",
+  "command": "/usr/bin/gcc   -g -Wall -Wextra -Wno-sign-compare -g -std=gnu11 -o CMakeFiles/parent-dup.dir/parent-dup.c.o -c /home/wojtek/MIM-projekty/pw/c/parent-dup.c",
+  "file": "/home/wojtek/MIM-projekty/pw/c/parent-dup.c"
+},
+{
+  "directory": "/home/wojtek/MIM-projekty/pw/c/build",
+  "command": "/usr/bin/gcc   -g -Wall -Wextra -Wno-sign-compare -g -std=gnu11 -o CMakeFiles/child-fifo.dir/child-fifo.c.o -c /home/wojtek/MIM-projekty/pw/c/child-fifo.c",
+  "file": "/home/wojtek/MIM-projekty/pw/c/child-fifo.c"
+},
+{
+  "directory": "/home/wojtek/MIM-projekty/pw/c/build",
+  "command": "/usr/bin/gcc   -g -Wall -Wextra -Wno-sign-compare -g -std=gnu11 -o CMakeFiles/parent-fifo.dir/parent-fifo.c.o -c /home/wojtek/MIM-projekty/pw/c/parent-fifo.c",
+  "file": "/home/wojtek/MIM-projekty/pw/c/parent-fifo.c"
+},
+{
+  "directory": "/home/wojtek/MIM-projekty/pw/c/build",
+  "command": "/usr/bin/gcc   -g -Wall -Wextra -Wno-sign-compare -g -std=gnu11 -o CMakeFiles/pipeline-utils.dir/pipeline-utils.c.o -c /home/wojtek/MIM-projekty/pw/c/pipeline-utils.c",
+  "file": "/home/wojtek/MIM-projekty/pw/c/pipeline-utils.c"
+},
+{
+  "directory": "/home/wojtek/MIM-projekty/pw/c/build",
+  "command": "/usr/bin/gcc   -g -Wall -Wextra -Wno-sign-compare -g -std=gnu11 -o CMakeFiles/pipeline.dir/pipeline.c.o -c /home/wojtek/MIM-projekty/pw/c/pipeline.c",
+  "file": "/home/wojtek/MIM-projekty/pw/c/pipeline.c"
+},
+{
+  "directory": "/home/wojtek/MIM-projekty/pw/c/build",
+  "command": "/usr/bin/gcc   -g -Wall -Wextra -Wno-sign-compare -g -std=gnu11 -o CMakeFiles/pipeline-tester.dir/pipeline-tester.c.o -c /home/wojtek/MIM-projekty/pw/c/pipeline-tester.c",
+  "file": "/home/wojtek/MIM-projekty/pw/c/pipeline-tester.c"
+}
+]
