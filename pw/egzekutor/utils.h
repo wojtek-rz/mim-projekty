@@ -8,13 +8,13 @@
  * If last character in allocated string is '\n',
  * replace it with '\0'. Otherwise, do nothing.
  */
-void trim_new_line_char(char *s);
+char *trim_new_line_char(char *s);
 
 /*
  * In a given array of string terminated with NULL pointer,
  * replace '\n' character in the last string with '\0'.
  */
-void trim_new_line_char_v(char **argv)
+void trim_new_line_char_v(char **argv);
 
 /*
  * Set or unset the 'close_on_exec' flag on a given descriptor.

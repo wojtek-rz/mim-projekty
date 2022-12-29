@@ -14,11 +14,17 @@ function(add_example_program target_name)
 endfunction()
 
 add_library(err err.c)
+
 add_library(utils utils.c)
 target_link_libraries(utils err)
+
 add_library(pipeline-utils pipeline-utils.c)
 target_link_libraries(pipeline-utils err)
 
+
 add_example_program(executor)
 add_example_program(simple_executor)
-add_example_program(task1)
+
+add_executable(task3 tests/task3.c)
+add_executable(task2 tests/task2.c)
+add_executable(task1 tests/task1.c)

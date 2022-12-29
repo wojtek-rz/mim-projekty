@@ -48,5 +48,7 @@ void print_open_descriptors(void)
             getpid(), entry->d_name, symlink_target);
     }
 
+    fprintf(stderr, "\n");
+
     closedir(dr);
 }

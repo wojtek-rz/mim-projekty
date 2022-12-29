@@ -16,17 +16,18 @@
 
 #include "err.h"
 
-void trim_new_line_char(char *s){
+char *trim_new_line_char(char *s){
     unsigned long len = strlen(s);
     if (s[len - 1] == '\n'){
         s[len - 1] = '\0';
     }
+    return s;
 }
 
 void trim_new_line_char_v(char **argv){
     unsigned long i = 0;
     while (argv[i] != NULL) i++;
-    trim_new_line_char(argv[i - 1]);
+    argv[i - 1] = trim_new_line_char(argv[i - 1]);
 }
 
 void set_close_on_exec(int file_descriptor, bool value)

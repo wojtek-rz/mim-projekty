@@ -8,24 +8,27 @@
 #include <unistd.h>
 #include "pipeline-utils.h"
 
-const size_t max_command_length = 512;
-const size_t max_n_tasks = 4096;
-const size_t max_line_length = 1024;
+enum {
+    max_command_length = 512,
+    max_n_tasks = 4096,
+    max_line_length = 1024
+};
 
-struct LineReader{
+struct LineReader {
     int pipe_dsc;
     pthread_mutex_t mutex;
     char *line;
 };
 typedef struct LineReader LineReader;
 
-struct Task{
+struct Task {
     long task_id;
     pid_t pid;
     LineReader stdout_reader;
     LineReader stderr_reader;
     pthread_t stdout_reader_thread;
     pthread_t stderr_reader_thread;
+    bool ended;
 };
 typedef struct Task Task;
 
@@ -36,30 +39,41 @@ struct Tasks {
 };
 typedef struct Tasks Tasks;
 
-
-void *line_reader_main(void *data){
+static void *line_reader_main(void *data) {
     LineReader *reader = data;
-    FILE * stream = fdopen(reader->pipe_dsc, "r");
+    FILE *stream = fdopen(reader->pipe_dsc, "r");
     size_t buff_size = max_line_length;
-    char *tmp_line = (char*)malloc(max_line_length);
-    tmp_line[0] = '\0';
+    char *tmp_line = (char *) malloc(max_line_length);
 
-    while (getline(&tmp_line, &buff_size, stream) != -1){
+    while (getline(&tmp_line, &buff_size, stream) != -1) {
         pthread_mutex_lock(&reader->mutex);
 
         strcpy(reader->line, tmp_line);
-        trim_new_line_char(reader->line);
-//        printf("Read new line: %s\n",reader->line);
+        reader->line = trim_new_line_char(reader->line);
+//        printf("Read new line: %s\n", reader->line);
 
         pthread_mutex_unlock(&reader->mutex);
     }
 
-    fclose(stream);
     free(tmp_line);
+    fclose(stream);
+
     return 0;
 }
 
-void *task_main(void *data){
+void reader_init(LineReader *reader, int pipe_dsc) {
+    reader->pipe_dsc = pipe_dsc;
+    reader->line = (char *) malloc(max_line_length);
+    reader->line[0] = '\0';
+    ASSERT_ZERO(pthread_mutex_init(&reader->mutex, NULL));
+}
+
+void reader_destroy(LineReader *reader) {
+    free(reader->line);
+    ASSERT_ZERO(pthread_mutex_destroy(&reader->mutex));
+}
+
+void *task_main(void *data) {
     Task *task = data;
 
     pthread_create(&task->stdout_reader_thread, NULL, line_reader_main, &task->stdout_reader);
@@ -70,98 +84,127 @@ void *task_main(void *data){
 
     int status;
     waitpid(task->pid, &status, 0);
-    if (WIFSIGNALED(status)){
+    task->ended = true;
+    if (WIFSIGNALED(status)) {
         printf("Task %ld ended: signalled.\n", task->task_id);
-    } else if (WIFEXITED(status)){
+    } else if (WIFEXITED(status)) {
         printf("Task %ld ended: status %d.\n", task->task_id, WEXITSTATUS(status));
     }
 
     return 0;
 }
 
-void init_reader(LineReader *reader, int pipe_dsc){
-    reader->pipe_dsc = pipe_dsc;
-    ASSERT_ZERO(pthread_mutex_init(&reader->mutex, NULL));
-    reader->line = (char*)malloc(max_line_length);
-}
 
-void init_task(long task_id, int stdout_pipe_dsc, int stderr_pipe_dsc, pid_t pid){
-    pthread_t *thread_stdout = &threads[task_id];
-    Task *task = &tasks[task_id];
+long task_init(Tasks *tasks, int out_pipe_dsc, int err_pipe_dsc, pid_t pid) {
+    long task_id = tasks->tasks_deployed++;
+    Task *task = &tasks->tasks[task_id];
     task->pid = pid;
     task->task_id = task_id;
+    task->ended = false;
 
-    init_reader(&tasks->stdout_reader, stdout_pipe_dsc);
-    init_reader(&tasks->stderr_reader, stderr_pipe_dsc);
+    reader_init(&task->stdout_reader, out_pipe_dsc);
+    reader_init(&task->stderr_reader, err_pipe_dsc);
 
-    pthread_create(thread_stdout, NULL, task_main, task);
+    pthread_create(&tasks->threads[task_id], NULL, task_main, task);
+    return task_id;
 }
 
-void print_thread_line(size_t task_no, LineReader *listener_data){
+void task_destroy(Tasks *tasks, long task_id){
+    Task *task = &tasks->tasks[task_id];
+    reader_destroy(&task->stdout_reader);
+    reader_destroy(&task->stderr_reader);
+    ASSERT_ZERO(pthread_join(tasks->threads[task_id], NULL));
+}
+
+long task_kill(Tasks *tasks, long task_id){
+    kill(tasks->tasks[task_id].pid, SIGINT);
+}
+
+void tasks_init(Tasks *tasks) {
+    tasks->tasks_deployed = 0;
+}
+
+void tasks_destroy(Tasks *tasks){
+    for (int i = 0; i < tasks->tasks_deployed; ++i){
+        task_destroy(tasks, i);
+    }
+}
+
+void print_thread_line(size_t task_no, LineReader *listener_data) {
     pthread_mutex_lock(&listener_data->mutex);
     printf("Task %zu stdout: '%s'.\n", task_no, listener_data->line);
     pthread_mutex_unlock(&listener_data->mutex);
 }
 
-
-void run(char ** argv){
+void task_exec(Tasks *tasks, char **argv) {
     trim_new_line_char_v(argv);
-    int pipe_dsc_stdout[2];
-    int pipe_dsc_stderr[2];
-    ASSERT_SYS_OK(pipe(pipe_dsc_stdout));
-    ASSERT_SYS_OK(pipe(pipe_dsc_stderr));
+    int pipe_dsc_out[2];
+    int pipe_dsc_err[2];
+    ASSERT_SYS_OK(pipe(pipe_dsc_out));
+    ASSERT_SYS_OK(pipe(pipe_dsc_err));
 
     pid_t pid = fork();
     ASSERT_SYS_OK(pid);
-    if(!pid) {
+    if (!pid) {
         // Close read descriptors.
-        ASSERT_SYS_OK(close(pipe_dsc_stdout[0]));
-        ASSERT_SYS_OK(close(pipe_dsc_stderr[0]));
+        ASSERT_SYS_OK(close(pipe_dsc_out[0]));
+        ASSERT_SYS_OK(close(pipe_dsc_err[0]));
 
-        ASSERT_SYS_OK(dup2(pipe_dsc_stdout[1], STDOUT_FILENO));
-        ASSERT_SYS_OK(dup2(pipe_dsc_stderr[1], STDERR_FILENO));
-        ASSERT_SYS_OK(close(pipe_dsc_stdout[1]));
-        ASSERT_SYS_OK(close(pipe_dsc_stderr[1]));  // Close the original copies.
+        ASSERT_SYS_OK(dup2(pipe_dsc_out[1], STDOUT_FILENO));
+        ASSERT_SYS_OK(dup2(pipe_dsc_err[1], STDERR_FILENO));
+        ASSERT_SYS_OK(close(pipe_dsc_out[1]));
+        ASSERT_SYS_OK(close(pipe_dsc_err[1]));  // Close the original copies.
 
         ASSERT_SYS_OK(execvp(argv[0], argv));
-//        ASSERT_SYS_OK(execlp("./task1", "./task1", NULL));
     } else {
         // Close write descriptors.
-        ASSERT_SYS_OK(close(pipe_dsc_stdout[1]));
-        ASSERT_SYS_OK(close(pipe_dsc_stderr[1]));
+        ASSERT_SYS_OK(close(pipe_dsc_out[1]));
+        ASSERT_SYS_OK(close(pipe_dsc_err[1]));
 
-        init_task(tasks_deployed, pipe_dsc_stdout[0], pipe_dsc_stderr[0], pid);
-        printf("Task %ld started: pid %d.\n", tasks_deployed, pid);
-        tasks_deployed++;
+        long task_id = task_init(tasks, pipe_dsc_out[0], pipe_dsc_err[0], pid);
+        printf("Task %ld started: pid %d.\n", task_id, pid);
     }
 }
 
-int main(){
-    char buff[MAX_COMMAND_LENGTH];
+int main() {
+    char buff[max_command_length];
     char **words;
-    int i;
     long task_id;
 
-    while (read_line(buff, MAX_COMMAND_LENGTH, stdin)){
-        words = split_string(buff);
+    Tasks tasks;
+    tasks_init(&tasks);
 
-        if (strcmp(words[0], "run") == 0){
-            run(words + 1);
-        } else if (strcmp(words[0], "quit") == 0){
+    while (read_line(buff, max_command_length, stdin)) {
+        if (buff[0] == '\n') continue;
+
+        words = split_string(buff);
+        char *command_name = trim_new_line_char(words[0]);
+
+        if (strcmp(command_name, "run") == 0) {
+            task_exec(&tasks, words + 1);
+
+        } else if (strcmp(command_name, "quit") == 0) {
+            tasks_destroy(&tasks);
+            free_split_string(words);
             break;
-        } else if (strcmp(words[0], "sleep") == 0){
+
+        } else if (strcmp(command_name, "sleep") == 0) {
             long milliseconds = strtol(words[1], NULL, 10);
             usleep(milliseconds * 1000);
-        }
-        else {
+
+        } else {
             task_id = strtol(words[1], NULL, 10);
-            if (strcmp(words[0], "out") == 0){
-                print_thread_line(task_id, &tasks[task_id].stdout_reader);
-            } else if (strcmp(words[0], "err") == 0){
-                print_thread_line(task_id, &tasks[task_id].stderr_reader);
-            } else if (strcmp(words[0], "kill") == 0){
-                kill(tasks[task_id].pid, SIGINT);
+            if (strcmp(command_name, "out") == 0) {
+                print_thread_line(task_id, &tasks.tasks[task_id].stdout_reader);
+
+            } else if (strcmp(command_name, "err") == 0) {
+                print_thread_line(task_id, &tasks.tasks[task_id].stderr_reader);
+
+            } else if (strcmp(command_name, "kill") == 0) {
+                task_kill(&tasks, task_id);
+
             }
+
         }
 
         free_split_string(words);
