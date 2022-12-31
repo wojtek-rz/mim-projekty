@@ -1,0 +1,1 @@
+/usr/bin/cc -g -Wall -Wextra -Wno-sign-compare -rdynamic CMakeFiles/01_out.dir/tests/01_out.c.o -o 01_out 

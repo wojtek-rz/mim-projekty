@@ -1,0 +1,7 @@
+/home/wojtek/mim-projekty/pw/executor_tests/build_tests/CMakeFiles/err.dir
+/home/wojtek/mim-projekty/pw/executor_tests/build_tests/CMakeFiles/utils.dir
+/home/wojtek/mim-projekty/pw/executor_tests/build_tests/CMakeFiles/pipeline-utils.dir
+/home/wojtek/mim-projekty/pw/executor_tests/build_tests/CMakeFiles/executor.dir
+/home/wojtek/mim-projekty/pw/executor_tests/build_tests/CMakeFiles/01_out.dir
+/home/wojtek/mim-projekty/pw/executor_tests/build_tests/CMakeFiles/edit_cache.dir
+/home/wojtek/mim-projekty/pw/executor_tests/build_tests/CMakeFiles/rebuild_cache.dir

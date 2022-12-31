@@ -1,0 +1,60 @@
+Task 0 started: pid 228730.
+Task 1 started: pid 228734.
+Task 2 started: pid 228738.
+Task 3 started: pid 228742.
+Task 4 started: pid 228746.
+Task 5 started: pid 228750.
+Task 6 started: pid 228754.
+Task 7 started: pid 228758.
+Task 8 started: pid 228762.
+Task 9 started: pid 228766.
+Task 0 stdout: 'out line 4'.
+Task 1 stdout: 'out line 4'.
+Task 2 stdout: 'out line 3'.
+Task 3 stdout: 'out line 3'.
+Task 4 stdout: 'out line 2'.
+Task 5 stdout: 'out line 2'.
+Task 6 stdout: 'out line 1'.
+Task 7 stdout: 'out line 1'.
+Task 8 stdout: 'out line 0'.
+Task 9 stdout: 'out line 0'.
+Task 0 stderr: 'err line 4'.
+Task 1 stderr: 'err line 3'.
+Task 2 stderr: 'err line 3'.
+Task 3 stderr: 'err line 2'.
+Task 4 stderr: 'err line 2'.
+Task 5 stderr: 'err line 1'.
+Task 6 stderr: 'err line 1'.
+Task 7 stderr: 'err line 0'.
+Task 8 stderr: 'err line 0'.
+Task 9 stderr: ''.
+Task 0 stdout: 'out line 4'.
+Task 1 stdout: 'out line 4'.
+Task 2 stdout: 'out line 4'.
+Task 3 stdout: 'out line 3'.
+Task 4 stdout: 'out line 3'.
+Task 5 stdout: 'out line 2'.
+Task 6 stdout: 'out line 2'.
+Task 7 stdout: 'out line 1'.
+Task 8 stdout: 'out line 1'.
+Task 9 stdout: 'out line 0'.
+Task 0 stderr: 'err line 4'.
+Task 1 stderr: 'err line 4'.
+Task 2 stderr: 'err line 3'.
+Task 3 stderr: 'err line 3'.
+Task 4 stderr: 'err line 2'.
+Task 5 stderr: 'err line 2'.
+Task 6 stderr: 'err line 1'.
+Task 7 stderr: 'err line 1'.
+Task 8 stderr: 'err line 0'.
+Task 9 stderr: 'err line 0'.
+Task 0 ended: status 0.
+Task 1 ended: status 0.
+Task 2 ended: status 0.
+Task 3 ended: status 0.
+Task 4 ended: status 0.
+Task 5 ended: status 0.
+Task 6 ended: status 0.
+Task 7 ended: status 0.
+Task 8 ended: status 0.
+Task 9 ended: status 0.

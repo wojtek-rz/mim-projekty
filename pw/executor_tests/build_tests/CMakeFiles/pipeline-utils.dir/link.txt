@@ -1,0 +1,2 @@
+/usr/bin/ar qc libpipeline-utils.a CMakeFiles/pipeline-utils.dir/pipeline-utils.c.o
+/usr/bin/ranlib libpipeline-utils.a

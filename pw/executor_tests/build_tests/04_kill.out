@@ -1,0 +1,6 @@
+Task 0 started: pid 221052.
+Task 1 started: pid 221059.
+Task 2 started: pid 221076.
+Task 0 ended: status 0.
+Task 1 ended: status 0.
+Task 2 ended: signalled.

@@ -1,0 +1,7 @@
+/home/wojtek/mim-projekty/pw/posix/cmake-build-debug-coverage/CMakeFiles/err.dir
+/home/wojtek/mim-projekty/pw/posix/cmake-build-debug-coverage/CMakeFiles/utils.dir
+/home/wojtek/mim-projekty/pw/posix/cmake-build-debug-coverage/CMakeFiles/pipeline-utils.dir
+/home/wojtek/mim-projekty/pw/posix/cmake-build-debug-coverage/CMakeFiles/executor.dir
+/home/wojtek/mim-projekty/pw/posix/cmake-build-debug-coverage/CMakeFiles/01_out.dir
+/home/wojtek/mim-projekty/pw/posix/cmake-build-debug-coverage/CMakeFiles/edit_cache.dir
+/home/wojtek/mim-projekty/pw/posix/cmake-build-debug-coverage/CMakeFiles/rebuild_cache.dir
