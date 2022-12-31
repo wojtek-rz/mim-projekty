@@ -1,5 +1,5 @@
-CMakeFiles/err.dir/err.c.o: /home/wojtek/mim-projekty/pw/egzekutor/err.c \
- /usr/include/stdc-predef.h /home/wojtek/mim-projekty/pw/egzekutor/err.h \
+CMakeFiles/err.dir/err.c.o: /home/wojtek/mim-projekty/pw/posix/err.c \
+ /usr/include/stdc-predef.h /home/wojtek/mim-projekty/pw/posix/err.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdnoreturn.h \
  /usr/include/errno.h /usr/include/features.h \
  /usr/include/features-time64.h \

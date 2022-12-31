@@ -1,5 +1,5 @@
 CMakeFiles/pipeline-utils.dir/pipeline-utils.c.o: \
- /home/wojtek/mim-projekty/pw/egzekutor/pipeline-utils.c \
+ /home/wojtek/mim-projekty/pw/posix/pipeline-utils.c \
  /usr/include/stdc-predef.h /usr/include/dirent.h /usr/include/features.h \
  /usr/include/features-time64.h \
  /usr/include/x86_64-linux-gnu/bits/wordsize.h \
@@ -90,5 +90,5 @@ CMakeFiles/pipeline-utils.dir/pipeline-utils.c.o: \
  /usr/include/x86_64-linux-gnu/bits/getopt_posix.h \
  /usr/include/x86_64-linux-gnu/bits/getopt_core.h \
  /usr/include/x86_64-linux-gnu/bits/unistd_ext.h \
- /home/wojtek/mim-projekty/pw/egzekutor/err.h \
+ /home/wojtek/mim-projekty/pw/posix/err.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdnoreturn.h

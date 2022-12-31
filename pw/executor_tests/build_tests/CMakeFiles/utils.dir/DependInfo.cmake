@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/wojtek/mim-projekty/pw/egzekutor/utils.c" "CMakeFiles/utils.dir/utils.c.o" "gcc" "CMakeFiles/utils.dir/utils.c.o.d"
+  "/home/wojtek/mim-projekty/pw/posix/utils.c" "CMakeFiles/utils.dir/utils.c.o" "gcc" "CMakeFiles/utils.dir/utils.c.o.d"
   )
 
 # Targets to which this target links.

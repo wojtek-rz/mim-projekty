@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/wojtek/mim-projekty/pw/egzekutor/executor.c" "CMakeFiles/executor.dir/executor.c.o" "gcc" "CMakeFiles/executor.dir/executor.c.o.d"
+  "/home/wojtek/mim-projekty/pw/posix/executor.c" "CMakeFiles/executor.dir/executor.c.o" "gcc" "CMakeFiles/executor.dir/executor.c.o.d"
   )
 
 # Targets to which this target links.

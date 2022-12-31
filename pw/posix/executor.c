@@ -14,32 +14,81 @@ enum {
     max_line_length = 1022
 };
 
+struct LineReader;
+typedef struct LineReader LineReader;
+struct Task;
+typedef struct Task Task;
+struct WriteLock;
+typedef struct WriteLock WriteLock;
+struct Tasks;
+typedef struct Tasks Tasks;
+
+struct WriteLock {
+    pthread_mutex_t mutex;
+    pthread_cond_t priority_waiting;
+    pthread_cond_t normal_waiting;
+    int n_priority_waiting;
+    int n_normal_waiting;
+    bool occupied;
+};
+
+void write_lock_init(WriteLock *wl){
+    ASSERT_ZERO(pthread_mutex_init(&wl->mutex, NULL));
+    ASSERT_ZERO(pthread_cond_init(&wl->priority_waiting, NULL));
+    ASSERT_ZERO(pthread_cond_init(&wl->normal_waiting, NULL));
+    wl->n_priority_waiting = 0;
+    wl->n_normal_waiting = 0;
+    wl->occupied = false;
+}
+
+void write_lock_destroy(WriteLock *wl){
+    ASSERT_ZERO(pthread_cond_destroy(&wl->priority_waiting));
+    ASSERT_ZERO(pthread_cond_destroy(&wl->normal_waiting));
+    ASSERT_ZERO(pthread_mutex_destroy(&wl->mutex));
+}
+
+void priority_acquire(WriteLock *wl){
+    ASSERT_ZERO(pthread_mutex_lock(&wl->mutex));
+    wl->n_priority_waiting++;
+    while (wl->occupied){
+        ASSERT_ZERO(pthread_cond_wait(&wl->priority_waiting, &wl->mutex));
+    }
+    wl->n_priority_waiting--;
+    wl->occupied = true;
+
+    ASSERT_ZERO(pthread_mutex_unlock(&wl->mutex));
+}
+
+void normal_acquire(WriteLock *wl){
+    ASSERT_ZERO(pthread_mutex_lock(&wl->mutex));
+    wl->n_normal_waiting++;
+    while (wl->occupied || wl->n_priority_waiting > 0){
+        ASSERT_ZERO(pthread_cond_wait(&wl->normal_waiting, &wl->mutex));
+    }
+    wl->n_normal_waiting--;
+    wl->occupied = true;
+
+    ASSERT_ZERO(pthread_mutex_unlock(&wl->mutex));
+}
+
+void release(WriteLock *wl){
+    ASSERT_ZERO(pthread_mutex_lock(&wl->mutex));
+    wl->occupied = false;
+
+    if (wl->n_priority_waiting > 0)
+        ASSERT_ZERO(pthread_cond_signal(&wl->priority_waiting));
+    else if (wl->n_normal_waiting > 0)
+        ASSERT_ZERO(pthread_cond_signal(&wl->normal_waiting));
+
+    ASSERT_ZERO(pthread_mutex_unlock(&wl->mutex));
+}
+
+
 struct LineReader {
     int pipe_dsc;
     pthread_mutex_t mutex;
     char line[max_line_length];
 };
-typedef struct LineReader LineReader;
-
-struct Task {
-    long task_id;
-    pid_t pid;
-    LineReader stdout_reader;
-    LineReader stderr_reader;
-    pthread_t stdout_reader_thread;
-    pthread_t stderr_reader_thread;
-    pthread_mutex_t *mutex;
-    bool ended;
-};
-typedef struct Task Task;
-
-struct Tasks {
-    Task tasks[max_n_tasks];
-    pthread_t threads[max_n_tasks];
-    pthread_mutex_t mutex;
-    long tasks_deployed;
-};
-typedef struct Tasks Tasks;
 
 static void *line_reader_main(void *data) {
     LineReader *reader = data;
@@ -71,6 +120,17 @@ void reader_destroy(LineReader *reader) {
     ASSERT_ZERO(pthread_mutex_destroy(&reader->mutex));
 }
 
+struct Task {
+    long task_id;
+    pid_t pid;
+    LineReader stdout_reader;
+    LineReader stderr_reader;
+    pthread_t stdout_reader_thread;
+    pthread_t stderr_reader_thread;
+    WriteLock *write_lock;
+    bool ended;
+};
+
 void *task_main(void *data) {
     Task *task = data;
 
@@ -83,18 +143,24 @@ void *task_main(void *data) {
     int status;
     waitpid(task->pid, &status, 0);
 
-    ASSERT_ZERO(pthread_mutex_lock(task->mutex));
+    priority_acquire(task->write_lock);
     task->ended = true;
     if (WIFSIGNALED(status)) {
         printf("Task %ld ended: signalled.\n", task->task_id);
     } else if (WIFEXITED(status)) {
         printf("Task %ld ended: status %d.\n", task->task_id, WEXITSTATUS(status));
     }
-    ASSERT_ZERO(pthread_mutex_unlock(task->mutex));
+    release(task->write_lock);
 
     return 0;
 }
 
+struct Tasks {
+    Task tasks[max_n_tasks];
+    pthread_t threads[max_n_tasks];
+    WriteLock write_lock;
+    long tasks_deployed;
+};
 
 long task_init(Tasks *tasks, int out_pipe_dsc, int err_pipe_dsc, pid_t pid) {
     long task_id = tasks->tasks_deployed++;
@@ -102,7 +168,7 @@ long task_init(Tasks *tasks, int out_pipe_dsc, int err_pipe_dsc, pid_t pid) {
     task->pid = pid;
     task->task_id = task_id;
     task->ended = false;
-    task->mutex = &tasks->mutex;
+    task->write_lock = &tasks->write_lock;
 
     reader_init(&task->stdout_reader, out_pipe_dsc);
     reader_init(&task->stderr_reader, err_pipe_dsc);
@@ -125,14 +191,14 @@ void task_destroy(Tasks *tasks, long task_id){
 
 void tasks_init(Tasks *tasks) {
     tasks->tasks_deployed = 0;
-    ASSERT_ZERO(pthread_mutex_init(&tasks->mutex, NULL));
+    write_lock_init(&tasks->write_lock);
 }
 
 void tasks_destroy(Tasks *tasks){
     for (int i = 0; i < tasks->tasks_deployed; ++i){
         task_destroy(tasks, i);
     }
-    ASSERT_ZERO(pthread_mutex_destroy(&tasks->mutex));
+    write_lock_destroy(&tasks->write_lock);
 }
 
 void print_task_out_line(Tasks *tasks, size_t task_no) {
@@ -191,24 +257,21 @@ int main() {
     while (fgets(buff, max_command_length, stdin) != NULL) {
         if (buff[0] == '\n') continue;
 //        printf("read line: %s\n", buff);
-
         words = split_string(buff);
         char *command_name = trim_new_line_char(words[0]);
 
-
-        ASSERT_ZERO(pthread_mutex_lock(&tasks.mutex));
-
-        char buf2[max_command_length];
-        strcpy(buf2, buff);
-        buf2[strlen(buf2) - 1] = '\0';
-        printf("Processing line '%s'\n", buf2);
+        normal_acquire(&tasks.write_lock);
+//        char buf2[max_command_length];
+//        strcpy(buf2, buff);
+//        buf2[strlen(buf2) - 1] = '\0';
+//        printf("Processing line '%s'\n", buf2);
 
         if (strcmp(command_name, "run") == 0) {
             task_exec(&tasks, words + 1);
 
         } else if (strcmp(command_name, "quit") == 0) {
             free_split_string(words);
-            ASSERT_ZERO(pthread_mutex_unlock(&tasks.mutex));
+            release(&tasks.write_lock);
             break;
 
         } else if (strcmp(command_name, "sleep") == 0) {
@@ -224,11 +287,10 @@ int main() {
             } else if (strcmp(command_name, "kill") == 0) {
                 kill(tasks.tasks[task_id].pid, SIGINT);
             }
-
         }
 
         free_split_string(words);
-        ASSERT_ZERO(pthread_mutex_unlock(&tasks.mutex));
+        release(&tasks.write_lock);
     }
 
     tasks_destroy(&tasks);

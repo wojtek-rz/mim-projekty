@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/wojtek/mim-projekty/pw/egzekutor/pipeline-utils.c" "CMakeFiles/pipeline-utils.dir/pipeline-utils.c.o" "gcc" "CMakeFiles/pipeline-utils.dir/pipeline-utils.c.o.d"
+  "/home/wojtek/mim-projekty/pw/posix/pipeline-utils.c" "CMakeFiles/pipeline-utils.dir/pipeline-utils.c.o" "gcc" "CMakeFiles/pipeline-utils.dir/pipeline-utils.c.o.d"
   )
 
 # Targets to which this target links.

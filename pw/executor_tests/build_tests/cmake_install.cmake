@@ -1,4 +1,4 @@
-# Install script for directory: /home/wojtek/mim-projekty/pw/egzekutor
+# Install script for directory: /home/wojtek/mim-projekty/pw/posix
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

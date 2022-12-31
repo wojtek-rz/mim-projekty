@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/wojtek/mim-projekty/pw/egzekutor/err.c" "CMakeFiles/err.dir/err.c.o" "gcc" "CMakeFiles/err.dir/err.c.o.d"
+  "/home/wojtek/mim-projekty/pw/posix/err.c" "CMakeFiles/err.dir/err.c.o" "gcc" "CMakeFiles/err.dir/err.c.o.d"
   )
 
 # Targets to which this target links.

@@ -53,7 +53,7 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/wojtek/mim-projekty/pw/egzekutor
+CMAKE_SOURCE_DIR = /home/wojtek/mim-projekty/pw/posix
 
 # The top-level build directory on which CMake was run.
 CMAKE_BINARY_DIR = /home/wojtek/mim-projekty/pw/executor_tests/build_tests
@@ -69,28 +69,28 @@ include CMakeFiles/01_out.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/01_out.dir/flags.make
 
-CMakeFiles/01_out.dir/tests/01_out.c.o: CMakeFiles/01_out.dir/flags.make
-CMakeFiles/01_out.dir/tests/01_out.c.o: /home/wojtek/mim-projekty/pw/egzekutor/tests/01_out.c
-CMakeFiles/01_out.dir/tests/01_out.c.o: CMakeFiles/01_out.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/wojtek/mim-projekty/pw/executor_tests/build_tests/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/01_out.dir/tests/01_out.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/01_out.dir/tests/01_out.c.o -MF CMakeFiles/01_out.dir/tests/01_out.c.o.d -o CMakeFiles/01_out.dir/tests/01_out.c.o -c /home/wojtek/mim-projekty/pw/egzekutor/tests/01_out.c
+CMakeFiles/01_out.dir/tests/simple1/01_out.c.o: CMakeFiles/01_out.dir/flags.make
+CMakeFiles/01_out.dir/tests/simple1/01_out.c.o: /home/wojtek/mim-projekty/pw/posix/tests/simple1/01_out.c
+CMakeFiles/01_out.dir/tests/simple1/01_out.c.o: CMakeFiles/01_out.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/wojtek/mim-projekty/pw/executor_tests/build_tests/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/01_out.dir/tests/simple1/01_out.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/01_out.dir/tests/simple1/01_out.c.o -MF CMakeFiles/01_out.dir/tests/simple1/01_out.c.o.d -o CMakeFiles/01_out.dir/tests/simple1/01_out.c.o -c /home/wojtek/mim-projekty/pw/posix/tests/simple1/01_out.c
 
-CMakeFiles/01_out.dir/tests/01_out.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/01_out.dir/tests/01_out.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/wojtek/mim-projekty/pw/egzekutor/tests/01_out.c > CMakeFiles/01_out.dir/tests/01_out.c.i
+CMakeFiles/01_out.dir/tests/simple1/01_out.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/01_out.dir/tests/simple1/01_out.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/wojtek/mim-projekty/pw/posix/tests/simple1/01_out.c > CMakeFiles/01_out.dir/tests/simple1/01_out.c.i
 
-CMakeFiles/01_out.dir/tests/01_out.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/01_out.dir/tests/01_out.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/wojtek/mim-projekty/pw/egzekutor/tests/01_out.c -o CMakeFiles/01_out.dir/tests/01_out.c.s
+CMakeFiles/01_out.dir/tests/simple1/01_out.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/01_out.dir/tests/simple1/01_out.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/wojtek/mim-projekty/pw/posix/tests/simple1/01_out.c -o CMakeFiles/01_out.dir/tests/simple1/01_out.c.s
 
 # Object files for target 01_out
 01_out_OBJECTS = \
-"CMakeFiles/01_out.dir/tests/01_out.c.o"
+"CMakeFiles/01_out.dir/tests/simple1/01_out.c.o"
 
 # External object files for target 01_out
 01_out_EXTERNAL_OBJECTS =
 
-01_out: CMakeFiles/01_out.dir/tests/01_out.c.o
+01_out: CMakeFiles/01_out.dir/tests/simple1/01_out.c.o
 01_out: CMakeFiles/01_out.dir/build.make
 01_out: CMakeFiles/01_out.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/wojtek/mim-projekty/pw/executor_tests/build_tests/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking C executable 01_out"
@@ -105,6 +105,6 @@ CMakeFiles/01_out.dir/clean:
 .PHONY : CMakeFiles/01_out.dir/clean
 
 CMakeFiles/01_out.dir/depend:
-	cd /home/wojtek/mim-projekty/pw/executor_tests/build_tests && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/wojtek/mim-projekty/pw/egzekutor /home/wojtek/mim-projekty/pw/egzekutor /home/wojtek/mim-projekty/pw/executor_tests/build_tests /home/wojtek/mim-projekty/pw/executor_tests/build_tests /home/wojtek/mim-projekty/pw/executor_tests/build_tests/CMakeFiles/01_out.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/wojtek/mim-projekty/pw/executor_tests/build_tests && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/wojtek/mim-projekty/pw/posix /home/wojtek/mim-projekty/pw/posix /home/wojtek/mim-projekty/pw/executor_tests/build_tests /home/wojtek/mim-projekty/pw/executor_tests/build_tests /home/wojtek/mim-projekty/pw/executor_tests/build_tests/CMakeFiles/01_out.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/01_out.dir/depend
 

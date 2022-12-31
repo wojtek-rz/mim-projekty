@@ -53,7 +53,7 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/wojtek/mim-projekty/pw/egzekutor
+CMAKE_SOURCE_DIR = /home/wojtek/mim-projekty/pw/posix
 
 # The top-level build directory on which CMake was run.
 CMAKE_BINARY_DIR = /home/wojtek/mim-projekty/pw/executor_tests/build_tests
@@ -70,18 +70,18 @@ include CMakeFiles/utils.dir/progress.make
 include CMakeFiles/utils.dir/flags.make
 
 CMakeFiles/utils.dir/utils.c.o: CMakeFiles/utils.dir/flags.make
-CMakeFiles/utils.dir/utils.c.o: /home/wojtek/mim-projekty/pw/egzekutor/utils.c
+CMakeFiles/utils.dir/utils.c.o: /home/wojtek/mim-projekty/pw/posix/utils.c
 CMakeFiles/utils.dir/utils.c.o: CMakeFiles/utils.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/wojtek/mim-projekty/pw/executor_tests/build_tests/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/utils.dir/utils.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/utils.dir/utils.c.o -MF CMakeFiles/utils.dir/utils.c.o.d -o CMakeFiles/utils.dir/utils.c.o -c /home/wojtek/mim-projekty/pw/egzekutor/utils.c
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/utils.dir/utils.c.o -MF CMakeFiles/utils.dir/utils.c.o.d -o CMakeFiles/utils.dir/utils.c.o -c /home/wojtek/mim-projekty/pw/posix/utils.c
 
 CMakeFiles/utils.dir/utils.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/utils.dir/utils.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/wojtek/mim-projekty/pw/egzekutor/utils.c > CMakeFiles/utils.dir/utils.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/wojtek/mim-projekty/pw/posix/utils.c > CMakeFiles/utils.dir/utils.c.i
 
 CMakeFiles/utils.dir/utils.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/utils.dir/utils.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/wojtek/mim-projekty/pw/egzekutor/utils.c -o CMakeFiles/utils.dir/utils.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/wojtek/mim-projekty/pw/posix/utils.c -o CMakeFiles/utils.dir/utils.c.s
 
 # Object files for target utils
 utils_OBJECTS = \
@@ -106,6 +106,6 @@ CMakeFiles/utils.dir/clean:
 .PHONY : CMakeFiles/utils.dir/clean
 
 CMakeFiles/utils.dir/depend:
-	cd /home/wojtek/mim-projekty/pw/executor_tests/build_tests && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/wojtek/mim-projekty/pw/egzekutor /home/wojtek/mim-projekty/pw/egzekutor /home/wojtek/mim-projekty/pw/executor_tests/build_tests /home/wojtek/mim-projekty/pw/executor_tests/build_tests /home/wojtek/mim-projekty/pw/executor_tests/build_tests/CMakeFiles/utils.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/wojtek/mim-projekty/pw/executor_tests/build_tests && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/wojtek/mim-projekty/pw/posix /home/wojtek/mim-projekty/pw/posix /home/wojtek/mim-projekty/pw/executor_tests/build_tests /home/wojtek/mim-projekty/pw/executor_tests/build_tests /home/wojtek/mim-projekty/pw/executor_tests/build_tests/CMakeFiles/utils.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/utils.dir/depend
 

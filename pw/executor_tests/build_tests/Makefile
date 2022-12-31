@@ -57,7 +57,7 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/wojtek/mim-projekty/pw/egzekutor
+CMAKE_SOURCE_DIR = /home/wojtek/mim-projekty/pw/posix
 
 # The top-level build directory on which CMake was run.
 CMAKE_BINARY_DIR = /home/wojtek/mim-projekty/pw/executor_tests/build_tests
@@ -253,29 +253,29 @@ pipeline-utils.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/pipeline-utils.dir/build.make CMakeFiles/pipeline-utils.dir/pipeline-utils.c.s
 .PHONY : pipeline-utils.c.s
 
-tests/01_out.o: tests/01_out.c.o
-.PHONY : tests/01_out.o
+tests/simple1/01_out.o: tests/simple1/01_out.c.o
+.PHONY : tests/simple1/01_out.o
 
 # target to build an object file
-tests/01_out.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/01_out.dir/build.make CMakeFiles/01_out.dir/tests/01_out.c.o
-.PHONY : tests/01_out.c.o
+tests/simple1/01_out.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/01_out.dir/build.make CMakeFiles/01_out.dir/tests/simple1/01_out.c.o
+.PHONY : tests/simple1/01_out.c.o
 
-tests/01_out.i: tests/01_out.c.i
-.PHONY : tests/01_out.i
+tests/simple1/01_out.i: tests/simple1/01_out.c.i
+.PHONY : tests/simple1/01_out.i
 
 # target to preprocess a source file
-tests/01_out.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/01_out.dir/build.make CMakeFiles/01_out.dir/tests/01_out.c.i
-.PHONY : tests/01_out.c.i
+tests/simple1/01_out.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/01_out.dir/build.make CMakeFiles/01_out.dir/tests/simple1/01_out.c.i
+.PHONY : tests/simple1/01_out.c.i
 
-tests/01_out.s: tests/01_out.c.s
-.PHONY : tests/01_out.s
+tests/simple1/01_out.s: tests/simple1/01_out.c.s
+.PHONY : tests/simple1/01_out.s
 
 # target to generate assembly for a file
-tests/01_out.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/01_out.dir/build.make CMakeFiles/01_out.dir/tests/01_out.c.s
-.PHONY : tests/01_out.c.s
+tests/simple1/01_out.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/01_out.dir/build.make CMakeFiles/01_out.dir/tests/simple1/01_out.c.s
+.PHONY : tests/simple1/01_out.c.s
 
 utils.o: utils.c.o
 .PHONY : utils.o
@@ -323,9 +323,9 @@ help:
 	@echo "... pipeline-utils.o"
 	@echo "... pipeline-utils.i"
 	@echo "... pipeline-utils.s"
-	@echo "... tests/01_out.o"
-	@echo "... tests/01_out.i"
-	@echo "... tests/01_out.s"
+	@echo "... tests/simple1/01_out.o"
+	@echo "... tests/simple1/01_out.i"
+	@echo "... tests/simple1/01_out.s"
 	@echo "... utils.o"
 	@echo "... utils.i"
 	@echo "... utils.s"

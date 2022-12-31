@@ -53,7 +53,7 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/wojtek/mim-projekty/pw/egzekutor
+CMAKE_SOURCE_DIR = /home/wojtek/mim-projekty/pw/posix
 
 # The top-level build directory on which CMake was run.
 CMAKE_BINARY_DIR = /home/wojtek/mim-projekty/pw/executor_tests/build_tests
@@ -70,18 +70,18 @@ include CMakeFiles/err.dir/progress.make
 include CMakeFiles/err.dir/flags.make
 
 CMakeFiles/err.dir/err.c.o: CMakeFiles/err.dir/flags.make
-CMakeFiles/err.dir/err.c.o: /home/wojtek/mim-projekty/pw/egzekutor/err.c
+CMakeFiles/err.dir/err.c.o: /home/wojtek/mim-projekty/pw/posix/err.c
 CMakeFiles/err.dir/err.c.o: CMakeFiles/err.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/wojtek/mim-projekty/pw/executor_tests/build_tests/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/err.dir/err.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/err.dir/err.c.o -MF CMakeFiles/err.dir/err.c.o.d -o CMakeFiles/err.dir/err.c.o -c /home/wojtek/mim-projekty/pw/egzekutor/err.c
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/err.dir/err.c.o -MF CMakeFiles/err.dir/err.c.o.d -o CMakeFiles/err.dir/err.c.o -c /home/wojtek/mim-projekty/pw/posix/err.c
 
 CMakeFiles/err.dir/err.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/err.dir/err.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/wojtek/mim-projekty/pw/egzekutor/err.c > CMakeFiles/err.dir/err.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/wojtek/mim-projekty/pw/posix/err.c > CMakeFiles/err.dir/err.c.i
 
 CMakeFiles/err.dir/err.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/err.dir/err.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/wojtek/mim-projekty/pw/egzekutor/err.c -o CMakeFiles/err.dir/err.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/wojtek/mim-projekty/pw/posix/err.c -o CMakeFiles/err.dir/err.c.s
 
 # Object files for target err
 err_OBJECTS = \
@@ -106,6 +106,6 @@ CMakeFiles/err.dir/clean:
 .PHONY : CMakeFiles/err.dir/clean
 
 CMakeFiles/err.dir/depend:
-	cd /home/wojtek/mim-projekty/pw/executor_tests/build_tests && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/wojtek/mim-projekty/pw/egzekutor /home/wojtek/mim-projekty/pw/egzekutor /home/wojtek/mim-projekty/pw/executor_tests/build_tests /home/wojtek/mim-projekty/pw/executor_tests/build_tests /home/wojtek/mim-projekty/pw/executor_tests/build_tests/CMakeFiles/err.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/wojtek/mim-projekty/pw/executor_tests/build_tests && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/wojtek/mim-projekty/pw/posix /home/wojtek/mim-projekty/pw/posix /home/wojtek/mim-projekty/pw/executor_tests/build_tests /home/wojtek/mim-projekty/pw/executor_tests/build_tests /home/wojtek/mim-projekty/pw/executor_tests/build_tests/CMakeFiles/err.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/err.dir/depend
 

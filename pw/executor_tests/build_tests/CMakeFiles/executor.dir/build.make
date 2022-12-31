@@ -53,7 +53,7 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/wojtek/mim-projekty/pw/egzekutor
+CMAKE_SOURCE_DIR = /home/wojtek/mim-projekty/pw/posix
 
 # The top-level build directory on which CMake was run.
 CMAKE_BINARY_DIR = /home/wojtek/mim-projekty/pw/executor_tests/build_tests
@@ -70,18 +70,18 @@ include CMakeFiles/executor.dir/progress.make
 include CMakeFiles/executor.dir/flags.make
 
 CMakeFiles/executor.dir/executor.c.o: CMakeFiles/executor.dir/flags.make
-CMakeFiles/executor.dir/executor.c.o: /home/wojtek/mim-projekty/pw/egzekutor/executor.c
+CMakeFiles/executor.dir/executor.c.o: /home/wojtek/mim-projekty/pw/posix/executor.c
 CMakeFiles/executor.dir/executor.c.o: CMakeFiles/executor.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/wojtek/mim-projekty/pw/executor_tests/build_tests/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/executor.dir/executor.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/executor.dir/executor.c.o -MF CMakeFiles/executor.dir/executor.c.o.d -o CMakeFiles/executor.dir/executor.c.o -c /home/wojtek/mim-projekty/pw/egzekutor/executor.c
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/executor.dir/executor.c.o -MF CMakeFiles/executor.dir/executor.c.o.d -o CMakeFiles/executor.dir/executor.c.o -c /home/wojtek/mim-projekty/pw/posix/executor.c
 
 CMakeFiles/executor.dir/executor.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/executor.dir/executor.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/wojtek/mim-projekty/pw/egzekutor/executor.c > CMakeFiles/executor.dir/executor.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/wojtek/mim-projekty/pw/posix/executor.c > CMakeFiles/executor.dir/executor.c.i
 
 CMakeFiles/executor.dir/executor.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/executor.dir/executor.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/wojtek/mim-projekty/pw/egzekutor/executor.c -o CMakeFiles/executor.dir/executor.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/wojtek/mim-projekty/pw/posix/executor.c -o CMakeFiles/executor.dir/executor.c.s
 
 # Object files for target executor
 executor_OBJECTS = \
@@ -109,6 +109,6 @@ CMakeFiles/executor.dir/clean:
 .PHONY : CMakeFiles/executor.dir/clean
 
 CMakeFiles/executor.dir/depend:
-	cd /home/wojtek/mim-projekty/pw/executor_tests/build_tests && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/wojtek/mim-projekty/pw/egzekutor /home/wojtek/mim-projekty/pw/egzekutor /home/wojtek/mim-projekty/pw/executor_tests/build_tests /home/wojtek/mim-projekty/pw/executor_tests/build_tests /home/wojtek/mim-projekty/pw/executor_tests/build_tests/CMakeFiles/executor.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/wojtek/mim-projekty/pw/executor_tests/build_tests && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/wojtek/mim-projekty/pw/posix /home/wojtek/mim-projekty/pw/posix /home/wojtek/mim-projekty/pw/executor_tests/build_tests /home/wojtek/mim-projekty/pw/executor_tests/build_tests /home/wojtek/mim-projekty/pw/executor_tests/build_tests/CMakeFiles/executor.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/executor.dir/depend
 

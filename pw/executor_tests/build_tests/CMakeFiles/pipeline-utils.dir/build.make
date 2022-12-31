@@ -53,7 +53,7 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/wojtek/mim-projekty/pw/egzekutor
+CMAKE_SOURCE_DIR = /home/wojtek/mim-projekty/pw/posix
 
 # The top-level build directory on which CMake was run.
 CMAKE_BINARY_DIR = /home/wojtek/mim-projekty/pw/executor_tests/build_tests
@@ -70,18 +70,18 @@ include CMakeFiles/pipeline-utils.dir/progress.make
 include CMakeFiles/pipeline-utils.dir/flags.make
 
 CMakeFiles/pipeline-utils.dir/pipeline-utils.c.o: CMakeFiles/pipeline-utils.dir/flags.make
-CMakeFiles/pipeline-utils.dir/pipeline-utils.c.o: /home/wojtek/mim-projekty/pw/egzekutor/pipeline-utils.c
+CMakeFiles/pipeline-utils.dir/pipeline-utils.c.o: /home/wojtek/mim-projekty/pw/posix/pipeline-utils.c
 CMakeFiles/pipeline-utils.dir/pipeline-utils.c.o: CMakeFiles/pipeline-utils.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/wojtek/mim-projekty/pw/executor_tests/build_tests/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/pipeline-utils.dir/pipeline-utils.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/pipeline-utils.dir/pipeline-utils.c.o -MF CMakeFiles/pipeline-utils.dir/pipeline-utils.c.o.d -o CMakeFiles/pipeline-utils.dir/pipeline-utils.c.o -c /home/wojtek/mim-projekty/pw/egzekutor/pipeline-utils.c
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/pipeline-utils.dir/pipeline-utils.c.o -MF CMakeFiles/pipeline-utils.dir/pipeline-utils.c.o.d -o CMakeFiles/pipeline-utils.dir/pipeline-utils.c.o -c /home/wojtek/mim-projekty/pw/posix/pipeline-utils.c
 
 CMakeFiles/pipeline-utils.dir/pipeline-utils.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/pipeline-utils.dir/pipeline-utils.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/wojtek/mim-projekty/pw/egzekutor/pipeline-utils.c > CMakeFiles/pipeline-utils.dir/pipeline-utils.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/wojtek/mim-projekty/pw/posix/pipeline-utils.c > CMakeFiles/pipeline-utils.dir/pipeline-utils.c.i
 
 CMakeFiles/pipeline-utils.dir/pipeline-utils.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/pipeline-utils.dir/pipeline-utils.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/wojtek/mim-projekty/pw/egzekutor/pipeline-utils.c -o CMakeFiles/pipeline-utils.dir/pipeline-utils.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/wojtek/mim-projekty/pw/posix/pipeline-utils.c -o CMakeFiles/pipeline-utils.dir/pipeline-utils.c.s
 
 # Object files for target pipeline-utils
 pipeline__utils_OBJECTS = \
@@ -106,6 +106,6 @@ CMakeFiles/pipeline-utils.dir/clean:
 .PHONY : CMakeFiles/pipeline-utils.dir/clean
 
 CMakeFiles/pipeline-utils.dir/depend:
-	cd /home/wojtek/mim-projekty/pw/executor_tests/build_tests && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/wojtek/mim-projekty/pw/egzekutor /home/wojtek/mim-projekty/pw/egzekutor /home/wojtek/mim-projekty/pw/executor_tests/build_tests /home/wojtek/mim-projekty/pw/executor_tests/build_tests /home/wojtek/mim-projekty/pw/executor_tests/build_tests/CMakeFiles/pipeline-utils.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/wojtek/mim-projekty/pw/executor_tests/build_tests && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/wojtek/mim-projekty/pw/posix /home/wojtek/mim-projekty/pw/posix /home/wojtek/mim-projekty/pw/executor_tests/build_tests /home/wojtek/mim-projekty/pw/executor_tests/build_tests /home/wojtek/mim-projekty/pw/executor_tests/build_tests/CMakeFiles/pipeline-utils.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/pipeline-utils.dir/depend
 

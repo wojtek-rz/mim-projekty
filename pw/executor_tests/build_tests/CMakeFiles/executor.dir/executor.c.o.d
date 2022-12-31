@@ -1,8 +1,8 @@
 CMakeFiles/executor.dir/executor.c.o: \
- /home/wojtek/mim-projekty/pw/egzekutor/executor.c \
- /usr/include/stdc-predef.h /home/wojtek/mim-projekty/pw/egzekutor/err.h \
+ /home/wojtek/mim-projekty/pw/posix/executor.c /usr/include/stdc-predef.h \
+ /home/wojtek/mim-projekty/pw/posix/err.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdnoreturn.h \
- /home/wojtek/mim-projekty/pw/egzekutor/utils.h \
+ /home/wojtek/mim-projekty/pw/posix/utils.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdbool.h /usr/include/stdio.h \
  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
  /usr/include/features.h /usr/include/features-time64.h \
@@ -93,4 +93,4 @@ CMakeFiles/executor.dir/executor.c.o: \
  /usr/include/x86_64-linux-gnu/bits/getopt_posix.h \
  /usr/include/x86_64-linux-gnu/bits/getopt_core.h \
  /usr/include/x86_64-linux-gnu/bits/unistd_ext.h \
- /home/wojtek/mim-projekty/pw/egzekutor/pipeline-utils.h
+ /home/wojtek/mim-projekty/pw/posix/pipeline-utils.h

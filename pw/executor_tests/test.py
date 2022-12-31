@@ -2,15 +2,20 @@ import os
 import subprocess
 import sys
 
-if len(sys.argv) != 2:
+ONE_TEST_FILE = None
+if len(sys.argv) < 2:
     print("Use case: 'python3 test.py [path to directory with cmake file]'")
     exit()
+elif len(sys.argv) == 3:
+    print("Use case: 'python3 test.py [path to directory with cmake file] [path to test file]'")
+    ONE_TEST_FILE = os.path.abspath(sys.argv[2])
+    
 
 PATH_TO_CMAKE = os.path.abspath(sys.argv[1])
 FLAGS = '-Wall -Wextra -Werror -O2' # currently unused
 BUILD_DIR_NAME = 'build_tests'
 TEST_FOLDER_NAME = 'tests'
-VALGRIND = True
+VALGRIND = False
 
 def files_match(tested_file, schema_file):
     # Open the first file for reading
@@ -95,6 +100,35 @@ def build_for_dir(dir_name):
 
     return [c_file[:-2] for c_file in c_files]
 
+def test_file(dir_name, test_in_file):
+    input_file_path = os.path.abspath(f"{TEST_FOLDER_NAME}/{dir_name}/{test_in_file}")
+    output_file_path = os.path.abspath(f"{BUILD_DIR_NAME}/{test_in_file[:-3]}.out")
+    print("Testing file:", f"{TEST_FOLDER_NAME}/{dir_name}/{test_in_file}")
+
+    os.chdir(BUILD_DIR_NAME)
+    # Execute the program with input and output redirection
+    try:
+        if VALGRIND:
+            to_run = ['valgrind', './executor']
+        else:
+            to_run = ['./executor']
+        
+        result = subprocess.run(to_run, 
+                        stdin=open(input_file_path), 
+                        stdout=open(output_file_path, "w"))
+        if (result.returncode != 0):
+            print(f"Process return code = {result.returncode}")
+            return
+        
+    except Exception as e:
+        print(f"There was an exception {e}, maybe the program has crashed?")
+
+    os.chdir("..")
+    if files_match(output_file_path, f"{TEST_FOLDER_NAME}/{dir_name}/{test_in_file[:-3]}.out"):
+        print("\033[32mTEST PASSED\033[0m")
+    else:
+        print("\033[31mTEST FAILED\033[0m")
+
 def test_for_dir(dir_name):
     build_for_dir(dir_name)
 
@@ -103,33 +137,8 @@ def test_for_dir(dir_name):
     # Filter the list to only include files ending with ".in"
     in_files = [f for f in files if f.endswith(".in")]
     
-    for in_file in sorted(in_files):
-        input_file_path = os.path.abspath(f"{TEST_FOLDER_NAME}/{dir_name}/{in_file}")
-        output_file_path = os.path.abspath(f"{BUILD_DIR_NAME}/{in_file[:-3]}.out")
-        print("Testing file:", f"{TEST_FOLDER_NAME}/{dir_name}/{in_file}")
-
-        os.chdir(BUILD_DIR_NAME)
-        # Execute the program with input and output redirection
-        try:
-            if VALGRIND:
-                to_run = ['valgrind', './executor']
-            else:
-                to_run = ['./executor']
-            result = subprocess.run(to_run, 
-                            stdin=open(input_file_path), 
-                            stdout=open(output_file_path, "w"))
-            if (result.returncode != 0):
-                print(f"Process return code = {result.returncode}")
-                continue
-        except Exception as e:
-            print(f"There was an exception {e}, maybe the program has crashed?")
-
-        os.chdir("..")
-        if files_match(output_file_path, f"{TEST_FOLDER_NAME}/{dir_name}/{in_file[:-3]}.out"):
-            print("\033[32mTEST PASSED\033[0m")
-        else:
-            print("\033[31mTEST FAILED\033[0m")
-        
+    for test_in_file in sorted(in_files):
+        test_file(dir_name, test_in_file)
     # remove some files?
 
 
@@ -144,8 +153,14 @@ subprocess.run(["cmake", PATH_TO_CMAKE])
 subprocess.run(["make"])
 os.chdir(f"..")
 
-
-# Iterate over all the directories in the test directory
-for entry in os.scandir(TEST_FOLDER_NAME):
-    if entry.is_dir():
-        test_for_dir(entry.name)
+if ONE_TEST_FILE is None:
+    # Iterate over all the directories in the test directory
+    for entry in os.scandir(TEST_FOLDER_NAME):
+        if entry.is_dir():
+            test_for_dir(entry.name)
+else:
+    test_dir_name = os.path.dirname(ONE_TEST_FILE)
+    test_dir_name = os.path.basename(test_dir_name)
+    print(test_dir_name)
+    build_for_dir(test_dir_name)
+    test_file(test_dir_name, os.path.basename(ONE_TEST_FILE))

@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/wojtek/mim-projekty/pw/egzekutor/tests/01_out.c" "CMakeFiles/01_out.dir/tests/01_out.c.o" "gcc" "CMakeFiles/01_out.dir/tests/01_out.c.o.d"
+  "/home/wojtek/mim-projekty/pw/posix/tests/simple1/01_out.c" "CMakeFiles/01_out.dir/tests/simple1/01_out.c.o" "gcc" "CMakeFiles/01_out.dir/tests/simple1/01_out.c.o.d"
   )
 
 # Targets to which this target links.

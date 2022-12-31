@@ -190,7 +190,7 @@ MIMUW-FORK_BINARY_DIR:STATIC=/home/wojtek/mim-projekty/pw/executor_tests/build_t
 MIMUW-FORK_IS_TOP_LEVEL:STATIC=ON
 
 //Value Computed by CMake
-MIMUW-FORK_SOURCE_DIR:STATIC=/home/wojtek/mim-projekty/pw/egzekutor
+MIMUW-FORK_SOURCE_DIR:STATIC=/home/wojtek/mim-projekty/pw/posix
 
 //Dependencies for the target
 pipeline-utils_LIB_DEPENDS:STATIC=general;err;
@@ -267,7 +267,7 @@ CMAKE_GENERATOR_PLATFORM:INTERNAL=
 CMAKE_GENERATOR_TOOLSET:INTERNAL=
 //Source directory with the top level CMakeLists.txt file for this
 // project
-CMAKE_HOME_DIRECTORY:INTERNAL=/home/wojtek/mim-projekty/pw/egzekutor
+CMAKE_HOME_DIRECTORY:INTERNAL=/home/wojtek/mim-projekty/pw/posix
 //Install .so files without execute permission.
 CMAKE_INSTALL_SO_NO_EXE:INTERNAL=1
 //ADVANCED property for variable: CMAKE_LINKER
