@@ -1,1 +1,0 @@
-/usr/bin/cc -g -Wall -Wextra -Wno-sign-compare -rdynamic CMakeFiles/executor.dir/executor.c.o -o executor  liberr.a -lpthread libutils.a libpipeline-utils.a liberr.a 

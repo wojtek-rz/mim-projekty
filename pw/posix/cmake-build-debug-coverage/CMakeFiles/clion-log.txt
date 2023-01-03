@@ -1,4 +1,0 @@
-/home/wojtek/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.4345.21/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/home/wojtek/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.4345.21/bin/ninja/linux/ninja -DCMAKE_CXX_FLAGS=--coverage -DCMAKE_C_FLAGS=--coverage -G Ninja -S /home/wojtek/mim-projekty/pw/posix -B /home/wojtek/mim-projekty/pw/posix/cmake-build-debug-coverage
--- Configuring done
--- Generating done
--- Build files have been written to: /home/wojtek/mim-projekty/pw/posix/cmake-build-debug-coverage
