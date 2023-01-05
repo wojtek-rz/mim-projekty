@@ -23,11 +23,9 @@ target_link_libraries(pipeline-utils err)
 
 add_example_program(executor)
 
-
-
-
 add_executable(01_out tests/simple1/01_out.c)
 #add_executable(02_err tests/02_err.c)
 #add_executable(03_out_err tests/03_out_err.c)
 add_executable(04_kill tests/simple1/04_kill.c)
 #add_executable(t1 tests/t1.c)
+add_executable(mikolaj tests/mikolaj.c)

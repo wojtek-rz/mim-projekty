@@ -141,7 +141,6 @@ struct Task {
 void *task_main(void *data) {
     Task *task = data;
 
-
     int status;
     waitpid(task->pid, &status, 0);
 
@@ -252,7 +251,6 @@ void task_exec(Tasks *tasks, char **argv) {
 Tasks tasks;
 
 int main() {
-    setvbuf (stdout, NULL, _IONBF, BUFSIZ);
     char buff[max_command_length];
     char **words;
     long task_id;
@@ -295,7 +293,6 @@ int main() {
         }
 
         free_split_string(words);
-//        print_and_remove_ended(&tasks.ended_tasks);
         stop_blocking_print(&tasks.ended_tasks);
     }
 
