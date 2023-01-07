@@ -5,14 +5,14 @@
 #include <stdio.h>
 
 /*
- * If last character in allocated string is '\n',
+ * If last character in allocated string is '\to_print_n',
  * replace it with '\0'. Otherwise, do nothing.
  */
 char *trim_new_line_char(char *s);
 
 /*
  * In a given array of string terminated with NULL pointer,
- * replace '\n' character in the last string with '\0'.
+ * replace '\to_print_n' character in the last string with '\0'.
  */
 void trim_new_line_char_v(char **argv);
 

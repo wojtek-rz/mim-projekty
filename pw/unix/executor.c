@@ -24,21 +24,29 @@ typedef struct EndedTasksQueue EndedTasksQueue;
 struct Tasks;
 typedef struct Tasks Tasks;
 
+void task_destroy(Tasks *tasks, long task_id);
+
 struct EndedTasksQueue {
     pthread_mutex_t mutex;
-    long task_id_q[max_n_tasks];
-    long return_code_q[max_n_tasks];
-    bool all_ended[max_n_tasks];
+    long task_ids_q[max_n_tasks];
+    long return_codes_q[max_n_tasks];
+    int to_print_n;
+
+    long tasks_to_destroy_q[max_n_tasks];
+    int to_destroy_n;
+
+    bool tasks_ended[max_n_tasks];
+    bool tasks_destroyed[max_n_tasks];
     bool prevent_immediate_print;
-    int n;
 };
 
-void ended_tasks_init(EndedTasksQueue *et){
+void ended_tasks_queue_init(EndedTasksQueue *et){
     ASSERT_ZERO(pthread_mutex_init(&et->mutex, NULL));
-    et->n = 0;
+    et->to_print_n = 0;
+    et->to_destroy_n = 0;
 }
 
-void destroy_ended_tasks(EndedTasksQueue *et){
+void ended_tasks_queue_destroy(EndedTasksQueue *et){
     ASSERT_ZERO(pthread_mutex_destroy(&et->mutex));
 }
 
@@ -50,17 +58,20 @@ void print_out_ended_task(long taks_id, long return_code){
     }
 }
 
-void add_to_ended(EndedTasksQueue *et, long task_id, long return_code){
+void add_to_ended_tasks_queue(EndedTasksQueue *et, long task_id, long return_code){
     ASSERT_ZERO(pthread_mutex_lock(&et->mutex));
 
     if (et->prevent_immediate_print){
-        et->task_id_q[et->n] = task_id;
-        et->return_code_q[et->n] = return_code;
-        et->n++;
-        et->all_ended[task_id] = true;
+        et->task_ids_q[et->to_print_n] = task_id;
+        et->return_codes_q[et->to_print_n] = return_code;
+        et->to_print_n++;
     } else {
         print_out_ended_task(task_id, return_code);
     }
+    et->tasks_to_destroy_q[et->to_destroy_n] = task_id;
+    et->to_destroy_n++;
+
+    et->tasks_ended[task_id] = true;
 
     ASSERT_ZERO(pthread_mutex_unlock(&et->mutex));
 }
@@ -72,14 +83,21 @@ void start_blocking_print(EndedTasksQueue *et){
     ASSERT_ZERO(pthread_mutex_unlock(&et->mutex));
 }
 
-void stop_blocking_print(EndedTasksQueue *et){
+/* Only to be called from main. */
+void stop_blocking_print(EndedTasksQueue *et, Tasks *tasks){
     ASSERT_ZERO(pthread_mutex_lock(&et->mutex));
     et->prevent_immediate_print = false;
 
-    for (size_t i = 0; i < et->n; i++){
-        print_out_ended_task(et->task_id_q[i], et->return_code_q[i]);
+    for (size_t i = 0; i < et->to_print_n; i++){
+        print_out_ended_task(et->task_ids_q[i], et->return_codes_q[i]);
     }
-    et->n = 0;
+    et->to_print_n = 0;
+
+    for (size_t i = 0; i < et->to_destroy_n; i++){
+        task_destroy(tasks, et->tasks_to_destroy_q[i]);
+        et->tasks_destroyed[et->tasks_to_destroy_q[i]] = true;
+    }
+    et->to_destroy_n = 0;
 
     ASSERT_ZERO(pthread_mutex_unlock(&et->mutex));
 
@@ -87,11 +105,17 @@ void stop_blocking_print(EndedTasksQueue *et){
 
 bool check_if_ended(EndedTasksQueue *et, long task_id){
     ASSERT_ZERO(pthread_mutex_lock(&et->mutex));
-    bool val = et->all_ended[task_id];
+    bool val = et->tasks_ended[task_id];
     ASSERT_ZERO(pthread_mutex_unlock(&et->mutex));
     return val;
 }
 
+bool check_if_destroyed(EndedTasksQueue *et, long task_id){
+    ASSERT_ZERO(pthread_mutex_lock(&et->mutex));
+    bool val = et->tasks_destroyed[task_id];
+    ASSERT_ZERO(pthread_mutex_unlock(&et->mutex));
+    return val;
+}
 
 struct LineReader {
     int pipe_dsc;
@@ -109,11 +133,10 @@ static void *line_reader_main(void *data) {
 
         strcpy(reader->line, tmp_line);
         trim_new_line_char(reader->line);
-//        printf("Read new line: %s\n", reader->line);
 
         ASSERT_ZERO(pthread_mutex_unlock(&reader->mutex));
     }
-    close(reader->pipe_dsc);
+    /* fdclose in line_reader_destry */
 
     return 0;
 }
@@ -125,6 +148,7 @@ void reader_init(LineReader *reader, int pipe_dsc) {
 }
 
 void reader_destroy(LineReader *reader) {
+    close(reader->pipe_dsc);
     ASSERT_ZERO(pthread_mutex_destroy(&reader->mutex));
 }
 
@@ -145,9 +169,9 @@ void *task_main(void *data) {
     waitpid(task->pid, &status, 0);
 
     if (WIFSIGNALED(status)) {
-        add_to_ended(task->ended_tasks, task->task_id, -1);
+        add_to_ended_tasks_queue(task->ended_tasks, task->task_id, -1);
     } else if (WIFEXITED(status)) {
-        add_to_ended(task->ended_tasks, task->task_id, WEXITSTATUS(status));
+        add_to_ended_tasks_queue(task->ended_tasks, task->task_id, WEXITSTATUS(status));
     }
 
     return 0;
@@ -177,12 +201,9 @@ long task_init(Tasks *tasks, int out_pipe_dsc, int err_pipe_dsc, pid_t pid) {
     return task_id;
 }
 
+/* Does not kill the task. */
 void task_destroy(Tasks *tasks, long task_id){
     Task *task = &tasks->tasks[task_id];
-
-    if (!check_if_ended(&tasks->ended_tasks, task_id)){
-        kill(task->pid, SIGTERM);
-    }
 
     ASSERT_ZERO(pthread_join(task->stdout_reader_thread, NULL));
     ASSERT_ZERO(pthread_join(task->stderr_reader_thread, NULL));
@@ -193,29 +214,41 @@ void task_destroy(Tasks *tasks, long task_id){
 
 void tasks_init(Tasks *tasks) {
     tasks->tasks_deployed = 0;
-    ended_tasks_init(&tasks->ended_tasks);
+    ended_tasks_queue_init(&tasks->ended_tasks);
 }
 
 void tasks_destroy(Tasks *tasks){
     for (int i = 0; i < tasks->tasks_deployed; ++i){
-        task_destroy(tasks, i);
+        if (!check_if_destroyed(&tasks->ended_tasks, i)){
+            if (!check_if_ended(&tasks->ended_tasks, i)){
+                kill(tasks->tasks[i].pid, SIGKILL);
+            }
+            task_destroy(tasks, i);
+        }
     }
-//    print_and_remove_ended(&tasks->ended_tasks);
-    destroy_ended_tasks(&tasks->ended_tasks);
+    ended_tasks_queue_destroy(&tasks->ended_tasks);
 }
 
-void print_task_out_line(Tasks *tasks, size_t task_no) {
-    Task *task = &tasks->tasks[task_no];
-    pthread_mutex_lock(&task->stdout_reader.mutex);
-    printf("Task %zu stdout: '%s'.\n", task_no, task->stdout_reader.line);
-    pthread_mutex_unlock(&task->stdout_reader.mutex);
+void print_task_out_line(Tasks *tasks, long task_no) {
+    LineReader *lr = &tasks->tasks[task_no].stdout_reader;
+    if (!check_if_destroyed(&tasks->ended_tasks, task_no)) {
+        pthread_mutex_lock(&lr->mutex);
+        printf("Task %ld stdout: '%s'.\n", task_no, lr->line);
+        pthread_mutex_unlock(&lr->mutex);
+    } else {
+        printf("Task %ld stdout: '%s'.\n", task_no, lr->line);
+    }
 }
 
-void print_task_err_line(Tasks *tasks, size_t task_no) {
+void print_task_err_line(Tasks *tasks, long task_no) {
     LineReader *lr = &tasks->tasks[task_no].stderr_reader;
-    pthread_mutex_lock(&lr->mutex);
-    printf("Task %zu stderr: '%s'.\n", task_no, lr->line);
-    pthread_mutex_unlock(&lr->mutex);
+    if (!check_if_destroyed(&tasks->ended_tasks, task_no)) {
+        pthread_mutex_lock(&lr->mutex);
+        printf("Task %ld stderr: '%s'.\n", task_no, lr->line);
+        pthread_mutex_unlock(&lr->mutex);
+    } else {
+        printf("Task %ld stderr: '%s'.\n", task_no, lr->line);
+    }
 }
 
 void task_exec(Tasks *tasks, char **argv) {
@@ -259,14 +292,14 @@ int main() {
 
     while (fgets(buff, max_command_length, stdin) != NULL) {
         if (isspace(buff[0])) continue;
-//        fprintf(stderr, "read line: %s\n", buff);
+//        fprintf(stderr, "read line: %s\to_print_n", buff);
         words = split_string(buff);
         char *command_name = trim_new_line_char(words[0]);
 
 //        char buf2[max_command_length];
 //        strcpy(buf2, buff);
 //        buf2[strlen(buf2) - 1] = '\0';
-//        fprintf(stderr, "Processing line '%s'\n", buf2);
+//        fprintf(stderr, "Processing line '%s'\to_print_n", buf2);
         start_blocking_print(&tasks.ended_tasks);
 
         if (strcmp(command_name, "run") == 0) {
@@ -274,7 +307,7 @@ int main() {
 
         } else if (strcmp(command_name, "quit") == 0) {
             free_split_string(words);
-            stop_blocking_print(&tasks.ended_tasks);
+            stop_blocking_print(&tasks.ended_tasks, &tasks);
             break;
 
         } else if (strcmp(command_name, "sleep") == 0) {
@@ -293,7 +326,7 @@ int main() {
         }
 
         free_split_string(words);
-        stop_blocking_print(&tasks.ended_tasks);
+        stop_blocking_print(&tasks.ended_tasks, &tasks);
     }
 
     tasks_destroy(&tasks);
