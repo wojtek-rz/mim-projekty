@@ -1,5 +1,3 @@
-#include "err.h"
-#include "utils.h"
 #include <pthread.h>
 #include <signal.h>
 #include <stdlib.h>
@@ -7,7 +5,8 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <ctype.h>
-#include "pipeline-utils.h"
+#include "err.h"
+#include "utils.h"
 
 enum {
     max_command_length = 511,
