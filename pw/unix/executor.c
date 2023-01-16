@@ -274,6 +274,8 @@ void task_exec(Tasks *tasks, char **argv) {
         // Close write descriptors.
         ASSERT_SYS_OK(close(pipe_dsc_out[1]));
         ASSERT_SYS_OK(close(pipe_dsc_err[1]));
+        set_close_on_exec(pipe_dsc_out[0], true);
+        set_close_on_exec(pipe_dsc_err[0], true);
 
         long task_id = task_init(tasks, pipe_dsc_out[0], pipe_dsc_err[0], pid);
         printf("Task %ld started: pid %d.\n", task_id, pid);
@@ -283,6 +285,7 @@ void task_exec(Tasks *tasks, char **argv) {
 Tasks tasks;
 
 int main() {
+    setbuf(stdout, NULL);
     char buff[max_command_length];
     char **words;
     long task_id;

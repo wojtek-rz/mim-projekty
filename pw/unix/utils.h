@@ -17,6 +17,15 @@ char *trim_new_line_char(char *s);
 void trim_new_line_char_v(char **argv);
 
 /*
+ * Set or unset the 'close_on_exec' flag on a given descriptor.
+ *
+ * As the name suggests, this causes the descriptor to be automatically closed at any exec*().
+ * By default, this flag is false, but it's a good idea to basically always set it.
+ * Note that the flag is false for duplicated descriptors after dup2().
+ */
+void set_close_on_exec(int file_descriptor, bool value);
+
+/*
  * Split a string into space-delimited parts.
  *
  * The result is an array of null-terminated strings, ending with NULL.

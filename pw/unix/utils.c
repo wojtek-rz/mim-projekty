@@ -1,5 +1,6 @@
 #include "utils.h"
-
+#include "err.h"
+#include <fcntl.h>
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
@@ -16,6 +17,17 @@ void trim_new_line_char_v(char **argv){
     unsigned long i = 0;
     while (argv[i] != NULL) i++;
     argv[i - 1] = trim_new_line_char(argv[i - 1]);
+}
+
+void set_close_on_exec(int file_descriptor, bool value)
+{
+    int flags = fcntl(file_descriptor, F_GETFD);
+    ASSERT_SYS_OK(flags);
+    if (value)
+        flags |= FD_CLOEXEC;
+    else
+        flags &= ~FD_CLOEXEC;
+    ASSERT_SYS_OK(fcntl(file_descriptor, F_SETFD, flags));
 }
 
 char** split_string(const char* s)
