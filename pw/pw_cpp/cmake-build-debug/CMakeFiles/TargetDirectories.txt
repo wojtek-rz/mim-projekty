@@ -1,0 +1,5 @@
+/home/wojtek/mim-projekty/pw/pw_cpp/cmake-build-debug/CMakeFiles/system.dir
+/home/wojtek/mim-projekty/pw/pw_cpp/cmake-build-debug/CMakeFiles/demo.dir
+/home/wojtek/mim-projekty/pw/pw_cpp/cmake-build-debug/CMakeFiles/my_tests.dir
+/home/wojtek/mim-projekty/pw/pw_cpp/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/wojtek/mim-projekty/pw/pw_cpp/cmake-build-debug/CMakeFiles/rebuild_cache.dir
