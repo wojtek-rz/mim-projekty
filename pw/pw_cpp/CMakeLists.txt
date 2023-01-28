@@ -8,7 +8,7 @@ set(CMAKE_CXX_FLAGS "-g -Wall")
 set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 find_package(Threads REQUIRED)
 
-add_library(system system.hpp system.cpp my_tests.cpp my_tests.h)
+add_library(system system.hpp system.cpp)
 
 function(add_example_program target_name)
     add_executable(${target_name} "${target_name}.cpp")

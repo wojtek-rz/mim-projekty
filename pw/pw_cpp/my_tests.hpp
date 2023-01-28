@@ -1,5 +1,5 @@
-#ifndef PW_CPP_MY_TESTS_H
-#define PW_CPP_MY_TESTS_H
+#ifndef PW_CPP_MY_TESTS_HPP
+#define PW_CPP_MY_TESTS_HPP
 
 #include <atomic>
 #include <chrono>
@@ -11,7 +11,7 @@
 #include <utility>
 #include <vector>
 #include <cassert>
-#include "system.hpp"
+#include "system.cpp"
 
 
 template<typename T, typename V>
@@ -97,13 +97,13 @@ public:
     std::unique_ptr<Product> getProduct() override {
         if (!CustomMachine<T>::turned_on) throw MachineNotWorking();
 
-        CustomMachine<T>::productsMade += 1;
         std::this_thread::sleep_for(std::chrono::milliseconds(CustomMachine<T>::time));
-        if (CustomMachine<T>::productsMade > notFailedProducts){
+        if (CustomMachine<T>::productsMade >= notFailedProducts){
             throw MachineFailure();
         }
+        CustomMachine<T>::productsMade += 1;
         return std::unique_ptr<T>(new T());
     }
 };
 
-#endif //PW_CPP_MY_TESTS_H
+#endif //PW_CPP_MY_TESTS_HPP

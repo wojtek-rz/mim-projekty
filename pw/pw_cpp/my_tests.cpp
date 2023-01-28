@@ -1,5 +1,5 @@
 #include <barrier>
-#include "my_tests.h"
+#include "my_tests.hpp"
 
 bool productsMatchOrder(std::vector<std::unique_ptr<Product>> products, std::vector<std::string> order){
     std::vector<std::string> products_names;
@@ -238,6 +238,7 @@ bool test3() {
             } catch (const FulfillmentFailure &e) {
                 assert(true);
             }
+            assert(system.getMenu() == std::vector<std::string>({"burger", "cheeseburger"}));
         });
         clients.push_back(std::move(client));
     }
@@ -246,11 +247,13 @@ bool test3() {
     }
 
     auto reports =  system.shutdown();
-    checkReports(reports, {CLIENTS_N * 2, CLIENTS_N * 2, 0, 0}, WORKERS_N, WORKERS_N);
+    checkReports(reports, {CLIENTS_N * 2, 0, CLIENTS_N * 2,  CLIENTS_N * 2}, WORKERS_N, WORKERS_N);
     assert(burgerMachine->productsMade == ORDERS_N);
     assert(cheeseburgerMachine->productsMade == ORDERS_N);
     assert(mcRoyalMachine->productsMade == CLIENTS_N);
-    assert(iceCreamMachine->productsMade == CLIENTS_N * 2);
+    assert(iceCreamMachine->productsMade == CLIENTS_N * 3);
+
+    return true;
 }
 
 int main(){
