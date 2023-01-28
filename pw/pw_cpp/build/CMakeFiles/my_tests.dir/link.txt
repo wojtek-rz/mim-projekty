@@ -1,1 +1,0 @@
-/usr/bin/c++ -g -Wall CMakeFiles/my_tests.dir/my_tests.cpp.o -o my_tests  lib/libgtest_main.a lib/libgtest.a libsystem.a 
