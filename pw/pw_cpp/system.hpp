@@ -8,7 +8,6 @@
 #include <functional>
 #include <future>
 #include <iostream>
-using namespace std;
 #include "machine.hpp"
 
 class FulfillmentFailure : public std::exception {
@@ -113,14 +112,12 @@ public:
             std::unique_ptr<Product> product;
             try {
                 product = machine->getProduct();
-                cout << "Machine " << name << " produced product" << endl;
                 std::unique_lock<std::mutex> lock(mutex);
                 requests.front().set_value(std::move(product));
                 requests.pop();
             }
             catch (MachineFailure &e) {
                 std::unique_lock<std::mutex> lock(mutex);
-                cout << "Machine " << name << " failed" << endl;
                 requests.front().set_exception(std::make_exception_ptr(e));
                 requests.pop();
             }
@@ -164,16 +161,23 @@ struct WorkerOrderDetails {
     }
 };
 
-struct SystemOrderDetails {
-    bool ready; // ready musi być w sekcji krytycznej
-    bool failed; // failed musi być w sekcji krytycznej
+struct SystemOrderDetails { // znajduje się w sekcji krytycznej
+    bool ready;
+    bool failed;
+    bool expired;
+    SystemOrderDetails() {
+        ready = false;
+        failed = false;
+        expired = false;
+    }
 };
 
 struct WorkerDetails {
     size_t id;
     unsigned int clientTimeout;
     std::unordered_map<std::string, std::shared_ptr<QueuedMachine>> machines;
-    std::function<void(size_t order_id, bool failed)> order_ready_callback;
+    std::function<void(size_t order_id, bool failed, bool expired)> order_ready_callback;
+    std::function<void(std::vector<std::string> names)> machine_failure_callback;
     std::function<bool(size_t worker_id)> worker_ready_callback;
 
     std::promise<std::shared_ptr<WorkerOrderDetails>> order_promise;
@@ -181,12 +185,14 @@ struct WorkerDetails {
 
     WorkerDetails(size_t id,  unsigned int clientTimeout,
                   std::unordered_map<std::string,std::shared_ptr<QueuedMachine>> &machines,
-                  std::function<void(size_t order_id, bool failed)> order_ready_callback,
+                  std::function<void(size_t order_id, bool failed, bool expired)> order_ready_callback,
+                  std::function<void(std::vector<std::string> names)> machine_failure_callback,
                   std::function<bool(size_t worker_id)> worker_ready_callback) {
         this->id = id;
         this->clientTimeout = clientTimeout;
         this->machines = machines;
         this->order_ready_callback = std::move(order_ready_callback);
+        this->machine_failure_callback = std::move(machine_failure_callback);
         this->worker_ready_callback = std::move(worker_ready_callback);
         report = WorkerReport();
     };
@@ -200,29 +206,29 @@ void workerLoop(std::shared_ptr<WorkerDetails> worker_details) {
         std::shared_ptr<WorkerOrderDetails> order_details = worker_details->order_promise.get_future().get();
         if (order_details == nullptr) break;
 
-        cout << "Worker " << worker_details->id << " got order " << order_details->id << endl;
+//        std::cout << "Worker " << worker_details->id << " got order " << order_details->id << std::endl;
 
         std::vector<std::future<std::unique_ptr<Product>>> futures;
         std::vector<std::unique_ptr<Product>> products;
 
-        bool failed = false;
         for (auto & order : order_details->orders) {
             futures.push_back(worker_details->machines[order]->getProductFuture());
         }
 
-        for (auto &future : futures) {
+        std::vector<std::string> failed_machines;
+        for (size_t i = 0; i < order_details->orders.size(); i++) {
             try {
-                products.push_back(future.get());
-            }
-            catch (MachineFailure &e) {
-                failed = true;
-                break;
+                products.push_back(futures[i].get());
+            } catch (MachineFailure &e) {
+                failed_machines.push_back(order_details->orders[i]);
             }
         }
+        bool failed = !failed_machines.empty();
 
-
-        worker_details->order_ready_callback(order_details->id, failed);
+        worker_details->machine_failure_callback(failed_machines);
+        worker_details->order_ready_callback(order_details->id, failed, false);
         order_details->ready_promise.set_value(!failed);
+
         if (failed){
             worker_details->report.failedOrders.push_back(order_details->orders);
             order_details->products_promise.set_exception(std::make_exception_ptr(FulfillmentFailure()));
@@ -233,7 +239,12 @@ void workerLoop(std::shared_ptr<WorkerDetails> worker_details) {
         if (future_status == std::future_status::ready) {
             worker_details->report.collectedOrders.push_back(order_details->orders);
         } else {
+            for (size_t i = 0; i < order_details->orders.size(); i++) {
+                worker_details->machines[order_details->orders[i]]->returnProduct(std::move(products[i]));
+            }
+
             worker_details->report.abandonedOrders.push_back(order_details->orders);
+            worker_details->order_ready_callback(order_details->id, failed, true);
         }
 
         order_details->products_promise.set_value(std::move(products));
@@ -260,11 +271,21 @@ private:
     std::unordered_map<size_t, std::shared_ptr<SystemOrderDetails>> system_orders;
     std::vector<std::string> menu;
 
-    std::function<void(size_t order_id, bool failed)> order_ready_callback{
-            [this](size_t order_id, bool failed) {
+    std::function<void(size_t order_id, bool failed, bool expired)> order_ready_callback{
+            [this](size_t order_id, bool failed, bool expired) {
                 std::unique_lock<std::mutex> lock(mutex);
                 system_orders[order_id]->ready = true;
                 system_orders[order_id]->failed = failed;
+                system_orders[order_id]->expired = expired;
+            }
+    };
+
+    std::function<void(std::vector<std::string> names)> machine_failure_callback{
+            [this](std::vector<std::string> names) {
+                std::unique_lock<std::mutex> lock(mutex);
+                for (auto &name : names) {
+                    menu.erase(std::remove(menu.begin(), menu.end(), name), menu.end());
+                }
             }
     };
 
@@ -275,7 +296,7 @@ private:
                 workers_ready[worker_id] = true;
                 numberOfFreeWorkers++;
                 free_worker_cond.notify_one();
-                cout << "Worker " << worker_id << " is ready" << endl;
+//                std::cout << "Worker " << worker_id << " is ready" << std::endl;
 
                 return !closed;
             }
@@ -300,7 +321,7 @@ public:
 
         for (size_t i = 0; i < numberOfWorkers; i++) {
             auto worker_details = std::make_shared<WorkerDetails>(i, clientTimeout, this->machines,  order_ready_callback,
-                                                                  worker_ready_callback);
+                                                                  machine_failure_callback, worker_ready_callback);
             workers.push_back(worker_details);
             workers_ready.push_back(true);
             std::thread thread(workerLoop, worker_details);
@@ -311,7 +332,6 @@ public:
     std::vector<WorkerReport> shutdown() {
         {
             std::unique_lock<std::mutex> lock(mutex);
-            cout << "system shutdown" << endl;
             closed = true;
         }
         for (auto &worker: workers) {
@@ -340,7 +360,9 @@ public:
         std::unique_lock<std::mutex> lock(mutex);
         std::vector<unsigned int> pending_orders;
         for (auto &order: system_orders) {
-            pending_orders.push_back(order.first);
+            if (!order.second->expired && !order.second->failed) {
+                pending_orders.push_back(order.first);
+            }
         }
         return pending_orders;
     }
@@ -353,7 +375,7 @@ public:
 
         const size_t id = this->order_count++;
         free_worker_cond.wait(lock, [this] { return numberOfFreeWorkers > 0; });
-        cout << "Order " << this->order_count << " received, free workers: " << numberOfFreeWorkers << endl;
+//        std::cout << "Order " << this->order_count << " received, free workers: " << numberOfFreeWorkers << std::endl;
         numberOfFreeWorkers--;
 
         auto system_order = std::make_shared<SystemOrderDetails>();
@@ -376,14 +398,13 @@ public:
                                                    return system_order->ready;
                                                });
         std::unique_ptr<CoasterPager> pager_ptr(raw_pager_ptr);
-        cout << "Order " << id << " given pager" << endl;
         return pager_ptr;
     }
 
     std::vector<std::unique_ptr<Product>> collectOrder(std::unique_ptr<CoasterPager> pager) {
-        cout << "collected order: " << pager->getId() << endl;
+//        std::cout << "collected order: " << pager->getId() << std::endl;
         std::unique_lock<std::mutex> lock(mutex);
-        if (system_orders.find(pager->getId()) == system_orders.end()) {
+        if (!pager || system_orders.find(pager->getId()) == system_orders.end()) {
             throw BadPagerException();
         }
         if (!system_orders[pager->getId()]->ready) {
@@ -391,6 +412,9 @@ public:
         }
         if (system_orders[pager->getId()]->failed) {
             throw FulfillmentFailure();
+        }
+        if (system_orders[pager->getId()]->expired) {
+            throw OrderExpiredException();
         }
 
         auto worker_order = worker_orders[pager->getId()];

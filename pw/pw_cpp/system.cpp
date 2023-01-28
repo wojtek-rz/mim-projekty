@@ -19,3 +19,4 @@
 //bool CoasterPager::isReady() const {
 //    return false;
 //}
+
