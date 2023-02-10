@@ -1,0 +1,30 @@
+Task 0 started: pid 84067.
+Task 1 started: pid 84071.
+Task 2 started: pid 84075.
+Task 3 started: pid 84079.
+Task 4 started: pid 84083.
+Task 5 started: pid 84087.
+Task 6 started: pid 84091.
+Task 7 started: pid 84095.
+Task 8 started: pid 84099.
+Task 9 started: pid 84103.
+Task 10 started: pid 84107.
+Task 11 started: pid 84111.
+Task 12 started: pid 84115.
+Task 13 started: pid 84119.
+Task 14 started: pid 84123.
+Task 7 ended: signalled.
+Task 9 ended: signalled.
+Task 8 ended: signalled.
+Task 0 ended: signalled.
+Task 6 ended: signalled.
+Task 1 ended: signalled.
+Task 5 ended: signalled.
+Task 3 ended: signalled.
+Task 2 ended: signalled.
+Task 4 ended: signalled.
+Task 11 ended: signalled.
+Task 10 ended: signalled.
+Task 13 ended: signalled.
+Task 12 ended: status 0.
+Task 14 ended: status 0.

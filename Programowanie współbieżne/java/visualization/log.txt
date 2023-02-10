@@ -1,0 +1,90 @@
+Alice tries to enter the workshop and occupy the machining station
+Charlie tries to enter the workshop and occupy the drilling station
+Bob tries to enter the workshop and occupy the quenching station
+Charlie now occupies the drilling station
+Bob now occupies the quenching station
+Alice now occupies the machining station
+Charlie starts using the drilling station
+Bob starts using the quenching station
+Alice starts using the machining station
+Charlie stops using the drilling station
+Charlie tries to switch its workplace to the welding station
+Charlie now occupies the welding station
+Charlie starts using the welding station
+Alice stops using the machining station
+Alice tries to switch its workplace to the drilling station
+Alice now occupies the drilling station
+Alice starts using the drilling station
+Charlie stops using the welding station
+Charlie tries to switch its workplace to the machining station
+Charlie now occupies the machining station
+Charlie starts using the machining station
+Bob stops using the quenching station
+Bob tries to switch its workplace to the drilling station
+Alice stops using the drilling station
+Alice tries to switch its workplace to the painting station
+Alice now occupies the painting station
+Bob now occupies the drilling station
+Alice starts using the painting station
+Bob starts using the drilling station
+Alice stops using the painting station
+Alice leaves the workshop
+Alice tries to enter the workshop and occupy the machining station
+Charlie stops using the machining station
+Charlie tries to switch its workplace to the painting station
+Charlie now occupies the painting station
+Alice now occupies the machining station
+Charlie starts using the painting station
+Alice starts using the machining station
+Bob stops using the drilling station
+Bob tries to switch its workplace to the painting station
+Alice stops using the machining station
+Alice tries to switch its workplace to the drilling station
+Alice now occupies the drilling station
+Alice starts using the drilling station
+Charlie stops using the painting station
+Charlie leaves the workshop
+Charlie tries to enter the workshop and occupy the drilling station
+Bob now occupies the painting station
+Bob starts using the painting station
+Alice stops using the drilling station
+Alice tries to switch its workplace to the painting station
+Charlie now occupies the drilling station
+Charlie starts using the drilling station
+Charlie stops using the drilling station
+Charlie tries to switch its workplace to the welding station
+Charlie now occupies the welding station
+Charlie starts using the welding station
+Bob stops using the painting station
+Bob leaves the workshop
+Alice now occupies the painting station
+Alice starts using the painting station
+Alice stops using the painting station
+Alice leaves the workshop
+Charlie stops using the welding station
+Charlie tries to switch its workplace to the machining station
+Charlie now occupies the machining station
+Charlie starts using the machining station
+Charlie stops using the machining station
+Charlie tries to switch its workplace to the painting station
+Charlie now occupies the painting station
+Charlie starts using the painting station
+Charlie stops using the painting station
+Charlie leaves the workshop
+Charlie tries to enter the workshop and occupy the drilling station
+Charlie now occupies the drilling station
+Charlie starts using the drilling station
+Charlie stops using the drilling station
+Charlie tries to switch its workplace to the welding station
+Charlie now occupies the welding station
+Charlie starts using the welding station
+Charlie stops using the welding station
+Charlie tries to switch its workplace to the machining station
+Charlie now occupies the machining station
+Charlie starts using the machining station
+Charlie stops using the machining station
+Charlie tries to switch its workplace to the painting station
+Charlie now occupies the painting station
+Charlie starts using the painting station
+Charlie stops using the painting station
+Charlie leaves the workshop
