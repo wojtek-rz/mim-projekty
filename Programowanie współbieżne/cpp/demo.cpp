@@ -4,7 +4,7 @@
 #include <thread>
 #include <iostream>
 #include <latch>
-#include "system.cpp"
+#include "system.hpp"
 
 
 template <typename T, typename V>
