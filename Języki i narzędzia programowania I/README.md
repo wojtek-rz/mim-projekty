@@ -6,6 +6,8 @@ _lab_: [Patrycja Węgrzynowicz](https://usosweb.mimuw.edu.pl/kontroler.php?_acti
 
 ---
 
+Zadania uczą różnych aspektów języka C++. Informacje o otrzymanych punktach znajdują się w tabeli poniżej.
+
 ## Zadania
 
 ### Zadanie 1: top7
@@ -38,7 +40,7 @@ Programowanie funkcyjne, wskaźniki do funkcji, wskaźniki do składowych, std::
 
 ## punkty
 
-|    ZADANIE     |   FOLDER    |                                              WSPOLAUTORZY                                               |      TESTY      |   CODE REVIEW   |
+|    ZADANIE     |   FOLDER    |                                              WSPÓŁAUTORZY                                               |      TESTY      |   CODE REVIEW   |
 | :------------: | :---------: | :-----------------------------------------------------------------------------------------------------: | :-------------: | :-------------: |
 |   **_top7_**   | `zadanie1/` |         [@AnthonyGrod](https://github.com/AnthonyGrod),[@Virtover](https://github.com/Virtover)         | **5** / 6 _pkt_ | **4** / 4 _pkt_ |
 |   **_hash_**   | `zadanie2/` |                              [@janwan2003](https://github.com/janwan2003)                               | **6** / 6 _pkt_ | **3** / 4 _pkt_ |
