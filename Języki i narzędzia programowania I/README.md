@@ -16,7 +16,7 @@ Podstawy STL-a, weryfikacja danych wejścowych, strumienie, regex, referencje.
 
 ### Zadanie 2: hash
 
-Łączneie c++ z c, obiekty globalne i ich problemy, kompilacja warunkowa, header guard, przestrzenie nazw.
+Łączenie c++ oraz c, obiekty globalne i problemy z nimi związane, kompilacja warunkowa, header guard, przestrzenie nazw.
 
 ### Zadanie 3: moneybag
 
@@ -32,7 +32,7 @@ Wyjątki, poziomy odporności na wyjątki, zarządzanie pamięcią i wskaźniki 
 
 ### Zadanie 6: worldcup
 
-Polimorfizm dynamiczny, klasy, dziedziczenie, funkcje wirtualne, interfejsy,polimorfizm, rzutowania, wzorce GRASP, SOLID, Liskov substitution principle.
+Polimorfizm dynamiczny, klasy, dziedziczenie, funkcje wirtualne, interfejsy, rzutowania, wzorce GRASP, SOLID, Liskov substitution principle.
 
 ### Zadanie 7: images
 
