@@ -46,6 +46,6 @@ Programowanie funkcyjne, wskaźniki do funkcji, wskaźniki do składowych, std::
 |   **_hash_**   | `zadanie2/` |                              [@janwan2003](https://github.com/janwan2003)                               | **6** / 6 _pkt_ | **3** / 4 _pkt_ |
 | **_moneybag_** | `zadanie3/` |                               [@staler444](https://github.com/staler444)                                | **3** / 6 _pkt_ | **4** / 4 _pkt_ |
 | **_organism_** | `zadanie4/` |                               [@Klosiu889](https://github.com/Klosiu889)                                | **5** / 6 _pkt_ | **3** / 4 _pkt_ |
-|  **_kvfifo_**  | `zadanie5/` | [@Klosiu889](https://github.com/Klosiu889),[@mateusz-piekarczyk](https://github.com/mateusz-piekarczyk) | **3** / 6 _pkt_ | **4** / 4 _pkt_ |
+|  **_kvfifo_**  | `zadanie5/` |   [@kielak2](https://github.com/kielak2),[@mateusz-piekarczyk](https://github.com/mateusz-piekarczyk)   | **3** / 6 _pkt_ | **4** / 4 _pkt_ |
 | **_worldcup_** | `zadanie6/` |                                 [@kacball](https://github.com/kacball)                                  | **5** / 6 _pkt_ | **4** / 4 _pkt_ |
 |  **_images_**  | `zadanie7/` |                                                                                                         | **6** / 6 _pkt_ | **4** / 4 _pkt_ |
