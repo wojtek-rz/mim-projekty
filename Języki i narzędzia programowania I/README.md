@@ -38,7 +38,7 @@ Polimorfizm dynamiczny, klasy, dziedziczenie, funkcje wirtualne, interfejsy, rzu
 
 Programowanie funkcyjne, wskaźniki do funkcji, wskaźniki do składowych, std::function, funktory, funkcje generyczne, wyrażenia lambda.
 
-## punkty
+## Punkty
 
 |    ZADANIE     |   FOLDER    |                                              WSPÓŁAUTORZY                                               |      TESTY      |   CODE REVIEW   |
 | :------------: | :---------: | :-----------------------------------------------------------------------------------------------------: | :-------------: | :-------------: |
