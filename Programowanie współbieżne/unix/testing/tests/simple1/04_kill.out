@@ -1,0 +1,16 @@
+Task 0 started: pid 57121.
+Task 1 started: pid 57125.
+Task 2 started: pid 57127.
+Task 3 started: pid 57131.
+Task 4 started: pid 57137.
+Task 5 started: pid 57141.
+======
+Task 0 ended: signalled.
+Task 1 ended: signalled.
+Task 2 ended: signalled.
+======
+======
+Task 3 ended: status 0.
+Task 4 ended: status 0.
+Task 5 ended: status 0.
+======

@@ -1,0 +1,6 @@
+Task 0 started: pid 62209.
+Task 0 ended: status 0.
+Task 0 stdout: '08_run_many_args.out'.
+Task 1 started: pid 62213.
+Task 1 ended: status 0.
+Task 1 stdout: 'secret message here'.

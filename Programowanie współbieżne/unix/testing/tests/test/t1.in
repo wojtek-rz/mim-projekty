@@ -1,0 +1,25 @@
+run ./t1
+out 0
+sleep 1000
+run ./t1
+sleep 100
+err 1
+kill 0
+kill 1
+sleep 100
+err 0
+out 0
+err 0
+out 1
+err 1
+kill 0
+kill 1
+sleep 100
+sleep 2000
+out 0
+err 0
+out 1
+err 1
+quit
+out 1
+err 1

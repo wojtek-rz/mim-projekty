@@ -1,0 +1,10 @@
+run ./04_kill
+run ./04_kill
+run ./04_kill
+run ./04_kill
+run ./04_kill
+run ./04_kill
+kill 0
+kill 1
+kill 2
+sleep 1200

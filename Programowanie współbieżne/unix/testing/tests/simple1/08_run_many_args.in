@@ -1,0 +1,6 @@
+run ls 08_run_many_args.out
+sleep 100
+out 0
+run echo secret message here
+sleep 100
+out 1

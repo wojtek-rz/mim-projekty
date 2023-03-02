@@ -1,0 +1,34 @@
+Task 0 started: pid 203149.
+Task 1 started: pid 203151.
+Task 2 started: pid 203154.
+Task 3 started: pid 203159.
+Task 4 started: pid 203163.
+Task 5 started: pid 203166.
+Task 6 started: pid 203172.
+Task 7 started: pid 203175.
+Task 8 started: pid 203179.
+Task 9 started: pid 203183.
+======
+Task 0 ended: signalled.
+Task 2 ended: signalled.
+Task 1 ended: signalled.
+Task 3 ended: signalled.
+Task 6 ended: signalled.
+Task 5 ended: signalled.
+Task 4 ended: signalled.
+Task 8 ended: signalled.
+Task 7 ended: signalled.
+Task 9 ended: signalled.
+======
+Task 10 started: pid 203189.
+Task 11 started: pid 203193.
+Task 12 started: pid 203196.
+Task 13 started: pid 203200.
+Task 14 started: pid 203204.
+======
+Task 10 ended: signalled.
+Task 11 ended: signalled.
+Task 13 ended: signalled.
+Task 14 ended: signalled.
+Task 12 ended: signalled.
+======
