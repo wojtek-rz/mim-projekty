@@ -1,5 +1,0 @@
-run ./09_return_code 1
-run ./09_return_code 2
-run ./09_return_code 3
-sleep 100
-out 1
