@@ -19,7 +19,7 @@ public final class WorkshopFactory {
     public final static Workshop newWorkshop(
             Collection<Workplace> workplaces
     ) {
-        return new cp2022.solution.ConcurrentWorkshop(workplaces);
+        return new cp2022.solution.Workshop(workplaces);
     }
 
 
