@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-deployment  # Sets Deployment name
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:10.1 # Sets Image
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 5432  # Exposes container port
+          envFrom:
+            - configMapRef:
+                name: postgres-config
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgredb
+      volumes:
+        - name: postgredb
+          persistentVolumeClaim:
+            claimName: postgres-pv-claim
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: postgres-pv-volume  # Sets PV's name
+  labels:
+    type: local  # Sets PV's type to local
+    app: postgres
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 2Gi # Sets PV Volume
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/mnt/data_postgres"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: postgres-pv-claim  # Sets name of PVC
+  labels:
+    app: postgres
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany  # Sets read and write access
+  resources:
+    requests:
+      storage: 2Gi  # Sets volume size
