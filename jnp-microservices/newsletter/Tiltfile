@@ -1,3 +1,0 @@
-docker_build('newsletters-go-image', '.', dockerfile='Dockerfile')
-k8s_yaml('deployment.yaml')
-k8s_resource('newsletters-deployment', port_forwards=8000)
