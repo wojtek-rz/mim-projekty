@@ -61,7 +61,7 @@ func consumerFunc(delivery rmq.Delivery) {
 		return
 	}
 
-	fmt.Println("email ", email.Subject, " sent to ", email.To)
+	fmt.Println("email ", email.Subject, " sent to ", email.To, "body = ", email.Body)
 	err = sendMail(email.Subject, email.Body, []string{email.To})
 	if err != nil {
 		fmt.Println("error sending email", err)

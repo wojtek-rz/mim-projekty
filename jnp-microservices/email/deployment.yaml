@@ -16,11 +16,10 @@ spec:
       containers:
       - name: email
         image: email-go-image
-        env:
-        - name: REDIS_HOST
-          value: redis
-        - name: REDIS_PORT
-          value: "6379"
-      envFrom:
-      - secretRef:
-         name: gmail-secret
+        envFrom:
+            - secretRef:
+                name: gmail-secret
+            - configMapRef:
+                name: common-config
+            - configMapRef:
+                name: redis-config

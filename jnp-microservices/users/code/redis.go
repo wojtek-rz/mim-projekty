@@ -17,10 +17,11 @@ type RedisConfig struct {
 
 func getRedisConfig() *RedisConfig {
 	config := RedisConfig{
-		Host:     os.Getenv("REDIS_HOST"),
-		Port:     os.Getenv("REDIS_PORT"),
-		Password: "",
-		Db:       0,
+		Host:           os.Getenv("REDIS_HOST"),
+		Port:           os.Getenv("REDIS_PORT"),
+		Password:       "",
+		Db:             0,
+		EmailQueueName: os.Getenv("EMAILS_QUEUE_NAME"),
 	}
 	return &config
 }

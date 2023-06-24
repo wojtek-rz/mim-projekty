@@ -23,6 +23,8 @@ func getRedisAddr() string {
 }
 
 func main() {
+	fmt.Println("env: ", os.Getenv("REDIS_HOST"), os.Getenv("REDIS_PORT"))
+
 	errChan := make(chan error, 10)
 	go logErrors(errChan)
 

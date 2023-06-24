@@ -52,3 +52,22 @@ func findUserByEmail(db *gorm.DB, email string) (*User, error) {
 func removeUserById(db *gorm.DB, id string) error {
 	return db.Delete(&User{}, "id = ?", id).Error
 }
+
+func verifyUserById(db *gorm.DB, id string) error {
+	return db.Model(&User{}).Where("id = ?", id).Update("verified", true).Error
+}
+
+func saveVerificationCode(id string, code string) error {
+	client := getRedisClient()
+	return client.Set(id, code, 0).Err()
+}
+
+func getVerificationCode(id string) (string, error) {
+	client := getRedisClient()
+	return client.Get(id).Result()
+}
+
+func removeVerifiationCode(id string) error {
+	client := getRedisClient()
+	return client.Del(id).Err()
+}

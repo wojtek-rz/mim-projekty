@@ -22,7 +22,7 @@ func (rd *RouterData) createUserRoute(c *gin.Context) {
 		return
 	}
 
-	_, err := saveNewUser(rd.pdb, &user)
+	savedUser, err := saveNewUser(rd.pdb, &user)
 	if err != nil {
 		if strings.Contains(err.Error(), "unique") {
 			c.JSON(http.StatusConflict, gin.H{"error": "User already exists"})
@@ -32,7 +32,14 @@ func (rd *RouterData) createUserRoute(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, user)
+	// send verification email
+	err = sendVerificationEmail(rd.mq, savedUser)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusCreated, savedUser)
 }
 
 func (rd *RouterData) getUserRoute(c *gin.Context) {
@@ -89,7 +96,7 @@ func (rd *RouterData) authUserRoute(c *gin.Context) {
 
 func (rd *RouterData) getUserFromAuthRoute(c *gin.Context) {
 	tokenString := c.GetHeader("Authorization")
-	
+
 	if len(tokenString) < 8 || tokenString[:7] != "Bearer " {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return
@@ -103,4 +110,29 @@ func (rd *RouterData) getUserFromAuthRoute(c *gin.Context) {
 	fmt.Println("email, err: ", userData.Email, err)
 
 	c.JSON(http.StatusOK, userData)
+}
+
+func (rd *RouterData) verifyUserRoute(c *gin.Context) {
+	id := c.Param("id")
+	code := c.Param("code")
+
+	valid_code, err := getVerificationCode(id)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+		return
+	}
+
+	if code != valid_code {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Wrong verification code"})
+		return
+	}
+
+	if err := verifyUserById(rd.pdb, id); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	_ = removeVerifiationCode(id)
+
+	c.JSON(http.StatusOK, gin.H{"message": "User verified"})
 }

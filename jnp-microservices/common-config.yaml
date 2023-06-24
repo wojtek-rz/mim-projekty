@@ -3,8 +3,8 @@ kind: ConfigMap
 metadata:
   name: common-config
 data:
-  EMAIL_QUEUE_NANE: "email_queue"
+  EMAILS_QUEUE_NAME: "emails-queue"
   USER_SERVICE_ADDR: "http://users.default.svc.cluster.local"
-  NEWSLETTER_SERVICE_ADDR: "newsletter:80"
+  NEWSLETTER_SERVICE_ADDR: "http://newsletters.default.svc.cluster.local"
 
 

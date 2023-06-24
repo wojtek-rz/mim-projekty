@@ -14,7 +14,11 @@ func sendMail(subject string, body string, to []string) error {
 		os.Getenv("GMAIL_HOST"),
 	)
 
-	msg := "Subject: " + subject + "\n" + body
+	heading := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
+
+	msg := "Subject: " + subject + "\n" + heading + body
+
+	fmt.Println("sending email msg:", msg)
 
 	err := smtp.SendMail(
 		os.Getenv("GMAIL_ADDR"),

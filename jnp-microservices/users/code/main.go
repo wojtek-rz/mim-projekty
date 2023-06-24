@@ -26,6 +26,7 @@ func main() {
 	router.POST("/users", rd.createUserRoute)
 	router.GET("/users/:id", rd.getUserRoute)
 	router.DELETE("/users/:id", rd.deleteUserRoute)
+	router.GET("/users/:id/verify/:code", rd.verifyUserRoute)
 
 	router.POST("/auth", rd.authUserRoute)
 	router.GET("/auth", rd.getUserFromAuthRoute)
