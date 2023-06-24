@@ -54,6 +54,10 @@ func consumerFunc(delivery rmq.Delivery) {
 	email, err := convertToEmail(delivery.Payload())
 	if err != nil {
 		fmt.Println("error converting to email", err)
+		err := delivery.Reject()
+		if err != nil {
+			fmt.Println("reject error:", err)
+		}
 		return
 	}
 
@@ -61,6 +65,10 @@ func consumerFunc(delivery rmq.Delivery) {
 	err = sendMail(email.Subject, email.Body, []string{email.To})
 	if err != nil {
 		fmt.Println("error sending email", err)
+		err := delivery.Reject()
+		if err != nil {
+			fmt.Println("reject error:", err)
+		}
 		return
 	}
 

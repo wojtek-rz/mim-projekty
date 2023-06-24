@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v5"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -10,8 +11,13 @@ var (
 	SecretKey = "polski-tajny-klucz"
 )
 
-func verifyUser(user *User) error {
-	dbUser, err := getUserByEmail(user.Email)
+type TokenUserData struct {
+	Email string `json:"email"`
+	Id    string `json:"id"`
+}
+
+func verifyUser(db *gorm.DB, user *User) error {
+	dbUser, err := findUserByEmail(db, user.Email)
 	if err != nil {
 		return err
 	}
@@ -24,22 +30,21 @@ func verifyUser(user *User) error {
 
 func generateToken(user User) (string, error) {
 	// Insert code to create JSON Web Token
-	token := jwt.New(jwt.SigningMethodHS256)
-
-	// Ustawienie danych użytkownika jako claim (payload) tokenu
-	claims := token.Claims.(jwt.MapClaims)
-	claims["email"] = user.Email
-	claims["exp"] = time.Now().Add(time.Hour * 24 * 7).Unix() // Token wygaśnie po 7 dniach
-
-	tokenString, err := token.SignedString([]byte(SecretKey))
+	t := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"id":    user.ID,
+		"email": user.Email,
+		"exp":   time.Now().Add(time.Hour * 24).Unix(),
+	})
+	s, err := t.SignedString([]byte(SecretKey))
 	if err != nil {
 		return "", err
 	}
-	return tokenString, nil
+	return s, nil
 }
 
-func verifyToken(tokenString string) (string, error) {
-	fmt.Println("verifyToken", tokenString)
+func verifyToken(tokenString string) (*TokenUserData, error) {
+	userData := TokenUserData{}
+
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Invalid token signing method")
@@ -48,15 +53,20 @@ func verifyToken(tokenString string) (string, error) {
 		return []byte(SecretKey), nil
 	})
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-
 	if !token.Valid {
-		return "", fmt.Errorf("Invalid token")
+		return nil, fmt.Errorf("Invalid token")
 	}
 
 	claims := token.Claims.(jwt.MapClaims)
-	email := claims["email"].(string)
+	userData.Email = claims["email"].(string)
+	userData.Id = claims["id"].(string)
+	exp := claims["exp"].(float64)
 
-	return email, nil
+	if time.Now().Unix() > int64(exp) {
+		return nil, fmt.Errorf("Token expired")
+	}
+
+	return &userData, nil
 }

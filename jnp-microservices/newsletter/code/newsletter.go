@@ -13,19 +13,13 @@ type Newsletter struct {
 }
 
 type NewsletterRecipient struct {
-	NewsletterId   string `json:"newsletter_id" gorm:"primary_key"`
-	RecipientId    string `json:"recipient_id" gorm:"primary_key"`
+	NewsletterId   string `json:"newsletter_id" gorm:"primaryKey"`
+	RecipientId    string `json:"recipient_id" gorm:"primaryKey"`
 	RecipientEmail string `json:"recipient_email" gorm:"not null"`
 }
 
-func generateNewsletterId(db *gorm.DB) string {
-	id := uuid.New()
-	// while id exists generate new id
-	for newsl, _ := findNewsletterById(db, id); newsl != nil; {
-		id = uuid.New()
-	}
-
-	return id
+func migrateNewsletter(db *gorm.DB) error {
+	return db.AutoMigrate(&Newsletter{}, &NewsletterRecipient{})
 }
 
 func saveNewNewsletter(db *gorm.DB, newsletter *Newsletter) (*Newsletter, error) {
@@ -37,9 +31,14 @@ func saveNewNewsletter(db *gorm.DB, newsletter *Newsletter) (*Newsletter, error)
 	return newsletter, nil
 }
 
+func generateNewsletterId(db *gorm.DB) string {
+	id := uuid.New()
+	return id
+}
+
 func findNewsletterById(db *gorm.DB, id string) (*Newsletter, error) {
 	var newsletter Newsletter
-	err := db.First(&newsletter, id).Error
+	err := db.First(&newsletter, "id = ?", id).Error
 	if err != nil {
 		return nil, err
 	}
@@ -48,19 +47,6 @@ func findNewsletterById(db *gorm.DB, id string) (*Newsletter, error) {
 
 func genereateRecipientId(db *gorm.DB, newsletterId string) (string, error) {
 	id := uuid.New()
-
-	var recipient *NewsletterRecipient
-	if err := db.First(recipient, "newsletter_id = ? AND recipient_id = ?", newsletterId, id).Error; err != nil {
-		return "", err
-	}
-
-	for recipient != nil {
-		id = uuid.New()
-		if err := db.First(recipient, "newsletter_id = ? AND recipient_id = ?", newsletterId, id).Error; err != nil {
-			return "", err
-		}
-	}
-
 	return id, nil
 }
 
@@ -87,7 +73,7 @@ func removeRecipient(db *gorm.DB, newsletterId string, recipientId string) error
 
 func findRecipients(db *gorm.DB, newsletterId string) ([]string, error) {
 	var recipients []NewsletterRecipient
-	err := db.Find(&recipients, "newsletter_id = ?", newsletterId).Error
+	err := db.First(&recipients, "newsletter_id = ?", newsletterId).Error
 	if err != nil {
 		return nil, err
 	}
@@ -101,7 +87,7 @@ func findRecipients(db *gorm.DB, newsletterId string) ([]string, error) {
 }
 
 func removeNewsletter(db *gorm.DB, id string) error {
-	err := db.Delete(&Newsletter{}, id).Error
+	err := db.Delete(&Newsletter{}, "id = ?", id).Error
 	if err != nil {
 		return err
 	}

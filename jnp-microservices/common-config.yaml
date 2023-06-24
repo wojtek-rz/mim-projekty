@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: common-config
+data:
+  EMAIL_QUEUE_NANE: "email_queue"
+  USER_SERVICE_ADDR: "http://users.default.svc.cluster.local"
+  NEWSLETTER_SERVICE_ADDR: "newsletter:80"
+
+

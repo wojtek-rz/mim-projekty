@@ -22,9 +22,17 @@ func (rd *RouterData) createNewsletterRoute(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	userData, err := get_user_data(c)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+
+	// send get request to user service to get user id
 	var newsletter = Newsletter{
-		Title:   newsletterRequest.Title,
-		Content: newsletterRequest.Content,
+		AuthorId: userData.ID,
+		Title:    newsletterRequest.Title,
+		Content:  newsletterRequest.Content,
 	}
 
 	newNewsletter, err := saveNewNewsletter(rd.DB, &newsletter)
@@ -73,7 +81,7 @@ func (rd *RouterData) deleteNewsletterRoute(c *gin.Context) {
 		return
 	}
 
-	c.Status(http.StatusNoContent)
+	c.Status(http.StatusOK)
 }
 
 type AddRecipientRequest struct {
@@ -90,7 +98,7 @@ func (rd *RouterData) addRecipientRoute(c *gin.Context) {
 
 	var recipient NewsletterRecipient
 	recipient.RecipientEmail = addRecipientRequest.Email
-	recipient.NewsletterId = c.Param("nid")
+	recipient.NewsletterId = c.Param("id")
 
 	newRecipient, err := addRecipient(rd.DB, &recipient)
 	if err != nil {
@@ -102,7 +110,7 @@ func (rd *RouterData) addRecipientRoute(c *gin.Context) {
 }
 
 func (rd *RouterData) removeRecipientRoute(c *gin.Context) {
-	nid := c.Param("nid")
+	nid := c.Param("id")
 	rid := c.Param("rid")
 
 	err := removeRecipient(rd.DB, nid, rid)
@@ -111,5 +119,5 @@ func (rd *RouterData) removeRecipientRoute(c *gin.Context) {
 		return
 	}
 
-	c.Status(http.StatusNoContent)
+	c.Status(http.StatusOK)
 }

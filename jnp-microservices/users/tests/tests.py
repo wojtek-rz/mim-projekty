@@ -2,7 +2,7 @@ import requests
 import unittest
 
 class APITestCase(unittest.TestCase):
-    base_url = 'http://localhost:8000'
+    base_url = 'http://localhost:8001'
 
     def get_user_by_id(self, user_id):
         url = f'{self.base_url}/users/{user_id}'
@@ -144,14 +144,14 @@ class APITestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         token = response.json()['token']
 
-        url = f'{self.base_url}/auth/check'
+        url = f'{self.base_url}/auth'
         headers = {"Authorization": f"Bearer {token}"}
         response = requests.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
     
     def test9_check_token_incorrect(self):
         token = 'incorrect_token'
-        url = f'{self.base_url}/auth/check'
+        url = f'{self.base_url}/auth'
 
         headers = {"Authorization": f"Bearer {token}"}
         response = requests.get(url, headers=headers)

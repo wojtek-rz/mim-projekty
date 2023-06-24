@@ -5,18 +5,35 @@ import (
 	"os"
 )
 
-var users = make(map[string]User)
-
 func main() {
+	rd := RouterData{}
+	var err error
+
+	rd.pdb, err = connectDB()
+	if err != nil {
+		panic("Failed to connect to database!")
+	}
+	rd.mq, err = connectToMailQueue()
+	if err != nil {
+		panic("Failed to connect to mail queue!")
+	}
+	err = rd.pdb.AutoMigrate(&User{})
+	if err != nil {
+		panic("Failed to migrate database!")
+	}
+
 	router := gin.Default()
+	router.POST("/users", rd.createUserRoute)
+	router.GET("/users/:id", rd.getUserRoute)
+	router.DELETE("/users/:id", rd.deleteUserRoute)
 
-	router.POST("/users", createUserRoute)
-	router.GET("/users/:id", getUserRoute)
-	router.DELETE("/users/:id", deleteUserRoute)
+	router.POST("/auth", rd.authUserRoute)
+	router.GET("/auth", rd.getUserFromAuthRoute)
 
-	router.POST("/auth", authUser)
-	router.GET("/auth/check", checkAuth)
-
-	port := os.Getenv("PORT")
-	router.Run(":" + port)
+	port := os.Getenv("APP_PORT")
+	err = router.Run(":" + port)
+	if err != nil {
+		panic("Failed to start server!")
+		return
+	}
 }

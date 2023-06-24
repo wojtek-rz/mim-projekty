@@ -15,12 +15,18 @@ func main() {
 		panic("Failed to connect to database!")
 	}
 
+	err = migrateNewsletter(rd.DB)
+	if err != nil {
+		return
+	}
+
 	router.POST("/newsletters", rd.createNewsletterRoute)
+
 	router.GET("/newsletters/:id", rd.getNewsletterRoute)
 	router.DELETE("/newsletters/:id", rd.deleteNewsletterRoute)
 
-	router.POST("/newsletters/:nid/recipients", rd.addRecipientRoute)
-	router.DELETE("/newsletters/:nid/recipients/:rid", rd.removeRecipientRoute)
+	router.POST("/newsletters/:id/recipients", rd.addRecipientRoute)
+	router.DELETE("/newsletters/:id/recipients/:rid", rd.removeRecipientRoute)
 
 	port := os.Getenv("APP_PORT")
 	err = router.Run(":" + port)

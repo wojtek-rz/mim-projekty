@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-type PosgresConfig struct {
+type PostgresConfig struct {
 	Host     string
 	Port     string
 	DB       string
@@ -15,8 +15,8 @@ type PosgresConfig struct {
 	Password string
 }
 
-func getPostgresConfig() *PosgresConfig {
-	config := PosgresConfig{
+func getPostgresConfig() *PostgresConfig {
+	config := PostgresConfig{
 		Host:     os.Getenv("POSTGRES_HOST"),
 		Port:     os.Getenv("POSTGRES_PORT"),
 		DB:       os.Getenv("POSTGRES_DB"),
@@ -36,10 +36,10 @@ func connectDB() (*gorm.DB, error) {
 		config.Port,
 	)
 
-	DB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}
 	fmt.Println("Connected Successfully to the Database")
-	return DB, nil
+	return db, nil
 }

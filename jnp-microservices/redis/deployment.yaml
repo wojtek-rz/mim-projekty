@@ -25,13 +25,29 @@ spec:
           persistentVolumeClaim:
             claimName: redis-pvc
 ---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: redis-pv-volume  # Sets PV's name
+  labels:
+    type: local  # Sets PV's type to local
+    app: redis
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 1Gi # Sets PV Volume
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/mnt/data_redis"
+---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: redis-pvc
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: 1Gi

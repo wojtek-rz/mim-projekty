@@ -5,7 +5,6 @@ go 1.20
 require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/pborman/uuid v1.2.1
-	github.com/wpcodevo/golang-gorm-postgres v0.0.0-20230325205328-be47b35ea9b4
 	gorm.io/driver/postgres v1.5.2
 	gorm.io/gorm v1.25.1
 )
