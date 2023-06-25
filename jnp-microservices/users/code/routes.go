@@ -54,6 +54,16 @@ func (rd *RouterData) getUserRoute(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
+func (rd *RouterData) getUsersRoute(c *gin.Context) {
+	users, err := findAllUsers(rd.pdb)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, users)
+}
+
 func (rd *RouterData) deleteUserRoute(c *gin.Context) {
 	id := c.Param("id")
 

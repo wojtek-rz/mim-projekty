@@ -31,6 +31,15 @@ func saveNewUser(db *gorm.DB, user *User) (*User, error) {
 	return user, nil
 }
 
+func findAllUsers(db *gorm.DB) ([]*User, error) {
+	var users []*User
+	err := db.Find(&users).Error
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
+}
+
 func findUserById(db *gorm.DB, id string) (*User, error) {
 	var user User
 	err := db.First(&user, "id = ?", id).Error

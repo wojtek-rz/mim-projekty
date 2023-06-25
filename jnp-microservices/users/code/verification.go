@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/adjust/rmq/v5"
 	"github.com/pborman/uuid"
+	"os"
 )
 
 type Email struct {
@@ -23,7 +24,7 @@ func sendToMailQueue(queue *rmq.Queue, email *Email) error {
 }
 
 func getUserBaseAddress() string {
-	return "http://localhost:8001"
+	return os.Getenv("http://localhost:8001")
 }
 
 func getVerificationMailBody(verification_url string) string {

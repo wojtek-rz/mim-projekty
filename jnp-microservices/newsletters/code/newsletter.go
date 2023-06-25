@@ -45,6 +45,15 @@ func findNewsletterById(db *gorm.DB, id string) (*Newsletter, error) {
 	return &newsletter, nil
 }
 
+func findNewslettersByUserId(db *gorm.DB, userId string) ([]Newsletter, error) {
+	var newsletters []Newsletter
+	err := db.Find(&newsletters, "author_id = ?", userId).Error
+	if err != nil {
+		return nil, err
+	}
+	return newsletters, nil
+}
+
 func genereateRecipientId(db *gorm.DB, newsletterId string) (string, error) {
 	id := uuid.New()
 	return id, nil

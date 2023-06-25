@@ -24,6 +24,7 @@ func main() {
 
 	router := gin.Default()
 	router.POST("/users", rd.createUserRoute)
+	router.GET("/users", rd.getUsersRoute)
 	router.GET("/users/:id", rd.getUserRoute)
 	router.DELETE("/users/:id", rd.deleteUserRoute)
 	router.GET("/users/:id/verify/:code", rd.verifyUserRoute)
