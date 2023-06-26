@@ -37,7 +37,7 @@ spec:
   capacity:
     storage: 1Gi # Sets PV Volume
   accessModes:
-    - ReadWriteMany
+    - ReadOnlyMany
   hostPath:
     path: "/mnt/data_redis"
 ---
@@ -47,7 +47,7 @@ metadata:
   name: redis-pvc
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadOnlyMany
   resources:
     requests:
       storage: 1Gi

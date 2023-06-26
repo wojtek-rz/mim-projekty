@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: users
-        image: users-go-image
+        image: wojtekrzeplinski/users-go-image
         ports:
         - containerPort: 8000
         env:

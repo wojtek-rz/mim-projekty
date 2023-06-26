@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: newsletters
-        image: newsletters-go-image
+        image: wojtekrzeplinski/newsletters-go-image
         ports:
         - containerPort: 8000
         env:

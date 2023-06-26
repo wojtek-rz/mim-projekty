@@ -9,10 +9,21 @@ export const getServerSideProps = async ({ req, res }) => {
     )
 
     const newsletters = await response.json()
-    return { props: { newsletters } }
+    const status = response.status
+    return { props: { newsletters, status } }
 }
 
-function Newsletters({ newsletters }) {
+function Newsletters({ newsletters, status }) {
+    if (status != 200) {
+        return (
+            <div>
+                <Headline>An error occured...</Headline>
+                <div>
+                    Status: {status}
+                </div>
+            </div>
+        )
+    }
     return (
         <div>
             <Headline>Newsletters</Headline>

@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: email
-        image: email-go-image
+        image: wojtekrzeplinski/email-go-image
         envFrom:
             - secretRef:
                 name: gmail-secret

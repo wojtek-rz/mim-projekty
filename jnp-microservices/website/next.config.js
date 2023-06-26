@@ -4,8 +4,16 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: '/api/:path*',
-        destination: 'http://kubernetes.docker.internal/:path*',
+        source: '/api/users/:path*',
+        destination: 'http://users/' + 'users/:path*',
+      },
+      {
+        source: '/api/auth/:path*',
+        destination: 'http://users/' + 'auth/:path*',
+      },
+      {
+        source: '/api/newsletters/:path*',
+        destination: 'http://newsletters/' + 'newsletters/:path*',
       },
     ]
   },
