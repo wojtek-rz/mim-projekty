@@ -93,7 +93,7 @@ func (rd *RouterData) authUserRoute(c *gin.Context) {
 		return
 	}
 
-	tokenString, err := generateToken(user)
+	tokenString, err := generateToken(&user)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"os"
 )
@@ -19,6 +19,8 @@ func get_user_auth_addr() string {
 }
 
 func get_user_data(c *gin.Context) (*UserData, error) {
+	var user UserData
+
 	req, err := http.NewRequest("GET", get_user_auth_addr(), nil)
 	if err != nil {
 		fmt.Println("Błąd podczas tworzenia zapytania:", err)
@@ -32,10 +34,15 @@ func get_user_data(c *gin.Context) (*UserData, error) {
 		fmt.Println("Błąd podczas wykonywania zapytania:", err)
 		return nil, err
 	}
-	defer resp.Body.Close()
 
-	var user UserData
-	body, err := ioutil.ReadAll(resp.Body)
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			fmt.Println("Błąd podczas zamykania ciała odpowiedzi:", err)
+		}
+	}(resp.Body)
+
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("Błąd podczas odczytu odpowiedzi:", err)
 		return nil, err
@@ -50,5 +57,6 @@ func get_user_data(c *gin.Context) (*UserData, error) {
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("Unauthorized")
 	}
+
 	return &user, nil
 }

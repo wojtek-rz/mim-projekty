@@ -25,10 +25,13 @@ func verifyUser(db *gorm.DB, user *User) error {
 	if dbUser.Password != user.Password {
 		return fmt.Errorf("Invalid password")
 	}
+
+	user.ID = dbUser.ID
 	return nil
 }
 
-func generateToken(user User) (string, error) {
+func generateToken(user *User) (string, error) {
+	fmt.Println("Generating token for user", user)
 	// Insert code to create JSON Web Token
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"id":    user.ID,
@@ -60,8 +63,8 @@ func verifyToken(tokenString string) (*TokenUserData, error) {
 	}
 
 	claims := token.Claims.(jwt.MapClaims)
-	userData.Email = claims["email"].(string)
 	userData.Id = claims["id"].(string)
+	userData.Email = claims["email"].(string)
 	exp := claims["exp"].(float64)
 
 	if time.Now().Unix() > int64(exp) {

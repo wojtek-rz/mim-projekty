@@ -24,7 +24,7 @@ func sendToMailQueue(queue *rmq.Queue, email *Email) error {
 }
 
 func getUserBaseAddress() string {
-	return os.Getenv("http://localhost:8001")
+	return os.Getenv("PUBLIC_ADDR")
 }
 
 func getVerificationMailBody(verification_url string) string {

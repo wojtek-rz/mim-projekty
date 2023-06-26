@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/adjust/rmq/v5"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -20,11 +21,12 @@ type CreateNewsletterRequest struct {
 
 func (rd *RouterData) getNewslettersRoute(c *gin.Context) {
 	userData, err := get_user_data(c)
-	if err != nil {
+	if err != nil || userData == nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return
 	}
 
+	fmt.Println("user data, err", userData, err)
 	newsletters, err := findNewslettersByUserId(rd.DB, userData.ID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -41,6 +43,7 @@ func (rd *RouterData) createNewsletterRoute(c *gin.Context) {
 		return
 	}
 	userData, err := get_user_data(c)
+	fmt.Println("user data", userData)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return
@@ -68,6 +71,10 @@ type ResponseNewsletter struct {
 }
 
 func (rd *RouterData) getNewsletterRoute(c *gin.Context) {
+	var recipients []string
+	var recipientsAll []NewsletterRecipient
+	var err error
+
 	id := c.Param("id")
 
 	newsletter, err := findNewsletterById(rd.DB, id)
@@ -76,10 +83,19 @@ func (rd *RouterData) getNewsletterRoute(c *gin.Context) {
 		return
 	}
 
-	recipients, err := findRecipients(rd.DB, id)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
+	userData, err := get_user_data(c)
+	if err == nil && userData.ID == newsletter.AuthorId {
+		recipientsAll, err = findRecipients(rd.DB, id)
+		if err != nil {
+			recipients = []string{}
+		} else {
+			recipients = make([]string, len(recipientsAll))
+			for i, _ := range recipients {
+				recipients[i] = recipientsAll[i].RecipientEmail
+			}
+		}
+	} else {
+		recipients = []string{}
 	}
 
 	response := ResponseNewsletter{
@@ -166,16 +182,11 @@ func (rd *RouterData) sendEmailsRoute(c *gin.Context) {
 		return
 	}
 
-	recipientsStr := make([]string, len(recipients))
-	for i, recipient := range recipients {
-		recipientsStr[i] = recipient
-	}
-
-	err = sendEmails(rd.MQ, &email, recipientsStr)
+	err = sendEmails(rd.MQ, &email, recipients)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.Status(http.StatusOK)
+	c.JSON(http.StatusOK, gin.H{"message": "Emails sent"})
 }

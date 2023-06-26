@@ -15,7 +15,7 @@ type Newsletter struct {
 type NewsletterRecipient struct {
 	NewsletterId   string `json:"newsletter_id" gorm:"primaryKey"`
 	RecipientId    string `json:"recipient_id" gorm:"primaryKey"`
-	RecipientEmail string `json:"recipient_email" gorm:"not null"`
+	RecipientEmail string `json:"recipient_email" gorm:"not null; unique"`
 }
 
 func migrateNewsletter(db *gorm.DB) error {
@@ -80,19 +80,14 @@ func removeRecipient(db *gorm.DB, newsletterId string, recipientId string) error
 	return nil
 }
 
-func findRecipients(db *gorm.DB, newsletterId string) ([]string, error) {
+func findRecipients(db *gorm.DB, newsletterId string) ([]NewsletterRecipient, error) {
 	var recipients []NewsletterRecipient
-	err := db.First(&recipients, "newsletter_id = ?", newsletterId).Error
+	err := db.Find(&recipients, "newsletter_id = ?", newsletterId).Error
 	if err != nil {
 		return nil, err
 	}
 
-	var emails []string
-	for _, recipient := range recipients {
-		emails = append(emails, recipient.RecipientEmail)
-	}
-
-	return emails, nil
+	return recipients, nil
 }
 
 func removeNewsletter(db *gorm.DB, id string) error {
