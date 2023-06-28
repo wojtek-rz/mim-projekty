@@ -1,0 +1,1 @@
+# Projekt zaliczeniowy znajduje się w [tutaj](https://github.com/wojtek-rz/jnp-microservices)
