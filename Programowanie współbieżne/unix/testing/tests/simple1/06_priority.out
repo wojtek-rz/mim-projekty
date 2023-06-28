@@ -1,0 +1,82 @@
+Task 0 started: pid 15825.
+Task 1 started: pid 15827.
+Task 2 started: pid 15831.
+Task 3 started: pid 15835.
+Task 4 started: pid 15839.
+Task 5 started: pid 15843.
+Task 6 started: pid 15847.
+Task 7 started: pid 15851.
+Task 8 started: pid 15854.
+Task 9 started: pid 15858.
+Task 10 started: pid 15862.
+Task 11 started: pid 15867.
+Task 12 started: pid 15870.
+Task 13 started: pid 15875.
+Task 14 started: pid 15878.
+Task 15 started: pid 15883.
+Task 16 started: pid 15886.
+Task 17 started: pid 15891.
+Task 18 started: pid 15894.
+Task 19 started: pid 15899.
+======
+Task 0 ended: status 0.
+Task 1 ended: status 0.
+Task 2 ended: status 0.
+Task 3 ended: status 0.
+Task 4 ended: status 0.
+Task 5 ended: status 0.
+Task 6 ended: status 0.
+Task 7 ended: status 0.
+Task 8 ended: status 0.
+Task 9 ended: status 0.
+Task 10 ended: status 0.
+Task 11 ended: status 0.
+Task 12 ended: status 0.
+Task 13 ended: status 0.
+Task 14 ended: status 0.
+Task 15 ended: status 0.
+Task 16 ended: status 0.
+Task 17 ended: status 0.
+Task 18 ended: status 0.
+Task 19 ended: status 0.
+======
+Task 0 stdout: 'should be written last'.
+Task 1 stdout: 'should be written last'.
+Task 2 stdout: 'should be written last'.
+Task 3 stdout: 'should be written last'.
+Task 4 stdout: 'should be written last'.
+Task 5 stdout: 'should be written last'.
+Task 6 stdout: 'should be written last'.
+Task 7 stdout: 'should be written last'.
+Task 8 stdout: 'should be written last'.
+Task 9 stdout: 'should be written last'.
+Task 10 stdout: 'should be written last'.
+Task 11 stdout: 'should be written last'.
+Task 12 stdout: 'should be written last'.
+Task 13 stdout: 'should be written last'.
+Task 14 stdout: 'should be written last'.
+Task 15 stdout: 'should be written last'.
+Task 16 stdout: 'should be written last'.
+Task 17 stdout: 'should be written last'.
+Task 18 stdout: 'should be written last'.
+Task 19 stdout: 'should be written last'.
+Task 0 stdout: 'should be written last'.
+Task 1 stdout: 'should be written last'.
+Task 2 stdout: 'should be written last'.
+Task 3 stdout: 'should be written last'.
+Task 4 stdout: 'should be written last'.
+Task 5 stdout: 'should be written last'.
+Task 6 stdout: 'should be written last'.
+Task 7 stdout: 'should be written last'.
+Task 8 stdout: 'should be written last'.
+Task 9 stdout: 'should be written last'.
+Task 10 stdout: 'should be written last'.
+Task 11 stdout: 'should be written last'.
+Task 12 stdout: 'should be written last'.
+Task 13 stdout: 'should be written last'.
+Task 14 stdout: 'should be written last'.
+Task 15 stdout: 'should be written last'.
+Task 16 stdout: 'should be written last'.
+Task 17 stdout: 'should be written last'.
+Task 18 stdout: 'should be written last'.
+Task 19 stdout: 'should be written last'.

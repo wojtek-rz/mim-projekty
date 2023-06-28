@@ -1,0 +1,16 @@
+run ./01_out
+run ./01_out
+run ./01_out
+run ./01_out
+run ./01_out
+sleep 300
+out 0
+out 1
+out 2
+out 3
+out 4
+out 0
+out 1
+out 2
+out 3
+out 4

@@ -1,0 +1,9 @@
+======
+Task 0 started: pid 66045.
+Task 1 started: pid 66049.
+Task 2 started: pid 66053.
+Task 0 ended: status 1.
+Task 1 ended: status 2.
+Task 2 ended: status 3.
+======
+Task 1 stdout: '2'.
