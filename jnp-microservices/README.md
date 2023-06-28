@@ -1,6 +1,6 @@
 # Newsletter manager
 
-[![Technologies](https://skillicons.dev/icons?i=go,nextjs,docker,kubernetes,gcp)](https://skillicons.dev)
+[![Technologies](https://skillicons.dev/icons?i=go,nextjs,docker,kubernetes,redis,postgres,gcp)](https://skillicons.dev)
 
 Projekt na zaliczenie kursu JNP 2 "Architektura i infrastruktura mikroserwisów w aplikacjach internetowych" na UW.
 
