@@ -1,0 +1,630 @@
+diff -rupNEZbB original_sources/usr/src/minix/include/minix/callnr.h sources/usr/src/minix/include/minix/callnr.h
+--- original_sources/usr/src/minix/include/minix/callnr.h	2014-09-13 23:56:50.000000000 +0200
++++ sources/usr/src/minix/include/minix/callnr.h	2023-06-08 12:12:31.962444330 +0200
+@@ -118,7 +118,9 @@
+ #define VFS_COPYFD		(VFS_BASE + 46)
+ #define VFS_CHECKPERMS		(VFS_BASE + 47)
+ #define VFS_GETSYSINFO		(VFS_BASE + 48)
++#define VFS_EXCLUSIVE		(VFS_BASE + 49)
++#define VFS_FEXCLUSIVE		(VFS_BASE + 50)
+ 
+-#define NR_VFS_CALLS		49	/* highest number from base plus one */
++#define NR_VFS_CALLS		51	/* highest number from base plus one */
+ 
+ #endif /* !_MINIX_CALLNR_H */
+diff -rupNEZbB original_sources/usr/src/minix/include/minix/ipc.h sources/usr/src/minix/include/minix/ipc.h
+--- original_sources/usr/src/minix/include/minix/ipc.h	2014-09-13 23:56:50.000000000 +0200
++++ sources/usr/src/minix/include/minix/ipc.h	2023-06-08 12:12:31.962444330 +0200
+@@ -842,6 +842,16 @@ typedef struct {
+ _ASSERT_MSG_SIZE(mess_lc_vfs_umount);
+ 
+ typedef struct {
++	int fd;
++	vir_bytes name;
++	size_t len;
++	int flags;
++
++	uint8_t padding[40];
++} mess_lc_vfs_exclusive;
++_ASSERT_MSG_SIZE(mess_lc_vfs_exclusive);
++
++typedef struct {
+ 	void		*addr;
+ 	uint8_t		padding[52];
+ } mess_lc_vm_brk;
+@@ -2121,6 +2131,7 @@ typedef struct {
+ 		mess_lc_vfs_truncate	m_lc_vfs_truncate;
+ 		mess_lc_vfs_umask	m_lc_vfs_umask;
+ 		mess_lc_vfs_umount	m_lc_vfs_umount;
++		mess_lc_vfs_exclusive	m_lc_vfs_exclusive;
+ 		mess_lc_vm_brk		m_lc_vm_brk;
+ 		mess_lc_vm_getphys	m_lc_vm_getphys;
+ 		mess_lc_vm_rusage	m_lc_vm_rusage;
+diff -rupNEZbB original_sources/usr/src/minix/servers/vfs/const.h sources/usr/src/minix/servers/vfs/const.h
+--- original_sources/usr/src/minix/servers/vfs/const.h	2014-09-13 23:56:50.000000000 +0200
++++ sources/usr/src/minix/servers/vfs/const.h	2023-06-08 12:12:31.962444330 +0200
+@@ -7,6 +7,7 @@
+ #define NR_MNTS           16 	/* # slots in mount table */
+ #define NR_VNODES       1024	/* # slots in vnode table */
+ #define NR_WTHREADS	   9	/* # slots in worker thread table */
++#define NR_EXCLUSIVE	8	/* # slots in the exclusive locking table */
+ 
+ #define NR_NONEDEVS	NR_MNTS	/* # slots in nonedev bitmap */
+ 
+diff -rupNEZbB original_sources/usr/src/minix/servers/vfs/exclusive.c sources/usr/src/minix/servers/vfs/exclusive.c
+--- original_sources/usr/src/minix/servers/vfs/exclusive.c	1970-01-01 01:00:00.000000000 +0100
++++ sources/usr/src/minix/servers/vfs/exclusive.c	2023-06-18 20:55:34.426721530 +0200
+@@ -0,0 +1,239 @@
++#include "fs.h"
++#include <fcntl.h>
++#include <minix/vfsif.h>
++#include "vnode.h"
++#include "file.h"
++#include "scratchpad.h"
++#include "path.h"
++
++int do_exclusive(void) {
++	struct vnode *vp;
++	struct vmnt *vmp;
++	int r;
++	char fullpath[PATH_MAX];
++	struct lookup resolve;
++	vir_bytes vname;
++	size_t vname_length;
++	int flags;
++
++	vname = job_m_in.m_lc_vfs_exclusive.name;
++	vname_length = job_m_in.m_lc_vfs_exclusive.len;
++	flags = job_m_in.m_lc_vfs_exclusive.flags;
++
++	lookup_init(&resolve, fullpath, PATH_NOFLAGS, &vmp, &vp);
++	resolve.l_vmnt_lock = VMNT_READ;
++	resolve.l_vnode_lock = VNODE_READ;
++
++
++	/* Temporarily open file */
++	if (fetch_name(vname, vname_length, fullpath) != OK) return(err_code);
++	if ((vp = eat_path(&resolve, fp)) == NULL) return(err_code);
++
++	if (((r = forbidden(fp, vp, R_BIT)) == OK || (r = forbidden(fp, vp, W_BIT)) == OK)) {
++		r = mutex_lock(&exclusive.exclusive_lock);
++		if (r == OK) {
++			r = exclusive_vnode(fp, vp, flags, -1);
++			mutex_unlock(&exclusive.exclusive_lock);
++		}
++	}
++
++	unlock_vnode(vp);
++	unlock_vmnt(vmp);
++	put_vnode(vp);
++
++	return(r);
++}
++
++int do_fexclusive(void) {
++	struct filp *rfilp;
++	struct vnode *vp;
++	int r, flags;
++	int fd = job_m_in.m_lc_vfs_exclusive.fd;
++	scratch(fp).file.fd_nr = fd;
++	flags = job_m_in.m_lc_vfs_exclusive.flags;
++
++	/* File is already opened; get a vnode pointer from filp */
++	if ((rfilp = get_filp(scratch(fp).file.fd_nr, VNODE_READ)) == NULL)
++		return(err_code);
++
++	vp = rfilp->filp_vno;
++
++	if (!(rfilp->filp_mode & W_BIT) && !(rfilp->filp_mode & R_BIT)
++		 && !(flags == EXCL_UNLOCK_FORCE))
++		r = EBADF;
++	else {
++		r = mutex_lock(&exclusive.exclusive_lock);
++		if (r == OK) {
++			r = exclusive_vnode(fp, vp, flags, fd);
++			mutex_unlock(&exclusive.exclusive_lock);
++		}
++	}
++
++	unlock_filp(rfilp);
++	return(r);
++}
++
++void print_exclusive(struct exclusive *ex){
++	printf("exclusive: ");
++	for (int i = 0; i < NR_EXCLUSIVE; i++){
++		printf("[(inode: %d), %d, %d, %d], ", (int)ex->slots[i].v_inode_nr,
++				(int)ex->slots[i].is_locked, (int)ex->slots[i].unlinked, (int)ex->slots[i].exclusive_uid);
++	}
++	printf("\n");
++
++}
++
++int count_exclusive_locked(struct exclusive *ex){
++	int count = 0;
++	for (int i = 0; i < NR_EXCLUSIVE; i++){
++		if (ex->slots[i].is_locked != 0) count++;
++	}
++	return count;
++}
++
++int find_free_slot(struct exclusive *ex){
++	for (int i = 0; i < NR_EXCLUSIVE; i++){
++		if (ex->slots[i].is_locked == 0) {
++			return i;
++		}
++	}
++	return -1;
++}
++
++int find_exclusive_vnode(struct exclusive *ex, struct vnode *vp){
++	for (int i = 0; i < NR_EXCLUSIVE; i++){
++		if (ex->slots[i].v_inode_nr == vp->v_inode_nr && ex->slots[i].v_fs_e == vp->v_fs_e){
++			return i;
++		}
++	}
++	return -1;
++}
++
++int is_used_by_other_users(struct fproc *rpf, struct vnode *vp){
++	int my_id = rpf->fp_realuid;
++	for (int i = 0; i < NR_PROCS; i++){
++		if (fproc[i].fp_realuid == my_id) continue;
++		if (fproc[i].fp_filp == NULL) continue;
++
++		for (int j = 0; j < OPEN_MAX; j++){
++			if (fproc[i].fp_filp[j] == NULL) continue;
++			if (fproc[i].fp_filp[j]->filp_vno == vp){
++				return 1;
++			}
++		}
++	}
++	return 0;
++}
++
++int exclusive_vnode(struct fproc *rfp, struct vnode *vp, int flags, int fd) 
++{
++	struct exclusive *ex = &exclusive;
++	int r = (OK);
++
++	if (!S_ISREG(vp->v_mode) || S_ISCHR(vp->v_mode) || S_ISFIFO(vp->v_mode)) return (EFTYPE);
++
++	if (flags == EXCL_LOCK || flags == EXCL_LOCK_NO_OTHERS) {
++		int idx = find_exclusive_vnode(ex, vp);
++		if (idx > -1 && ex->slots[idx].is_locked != 0) return (EALREADY);
++
++		if (count_exclusive_locked(ex) >= NR_EXCLUSIVE) return (ENOLCK);
++
++		if (flags == EXCL_LOCK_NO_OTHERS && is_used_by_other_users(rfp, vp))
++			return (EAGAIN);
++
++		idx = find_free_slot(ex);
++
++		ex->slots[idx].v_fs_e = vp->v_fs_e;
++		ex->slots[idx].v_inode_nr = vp->v_inode_nr;
++		ex->slots[idx].is_locked = 1;
++		ex->slots[idx].unlinked = 0;
++		ex->slots[idx].exclusive_uid = rfp->fp_realuid;
++		ex->slots[idx].owner_uid = vp->v_uid;
++		ex->slots[idx].exclusive_locked_fd = fd;
++		ex->slots[idx].v_vmnt = vp->v_vmnt;
++	}
++	else if (flags == EXCL_UNLOCK || flags == EXCL_UNLOCK_FORCE) {
++		int idx = find_exclusive_vnode(ex, vp);
++		if (idx > -1 && ex->slots[idx].is_locked == 0) return (EINVAL);
++
++		/* We know file is lock, but we don't know by whom. */
++		if (rfp->fp_realuid != ex->slots[idx].exclusive_uid){
++			if (!(flags == EXCL_UNLOCK_FORCE 
++				&& (rfp->fp_realuid == SU_UID || rfp->fp_realuid == ex->slots[idx].owner_uid)))
++				return (EPERM);
++		}
++		
++		ex->slots[idx].is_locked = 0;
++	}
++	else 
++		r = (EINVAL);
++
++	// print_exclusive(ex);
++
++  	return(r);
++}
++
++
++int check_exclusive_locked(struct exclusive *ex, struct fproc *rfp, ino_t v_inode_nr, endpoint_t v_fs_e)
++{
++	int r = OK;
++	if ((r = mutex_lock(&ex->exclusive_lock)) != OK) return r;
++	for (int i = 0; i < NR_EXCLUSIVE; i++){
++		if (ex->slots[i].v_inode_nr == v_inode_nr && ex->slots[i].v_fs_e == v_fs_e){
++			if (ex->slots[i].is_locked != 0 && rfp->fp_realuid != ex->slots[i].exclusive_uid) {
++				r = EACCES;
++				break;
++			}
++		}
++	}
++	mutex_unlock(&ex->exclusive_lock);
++	return r;
++}
++
++/* should be executed with ref_count = 1 if this is the last ref */
++int exclusive_unlock_on_close(struct exclusive *ex, struct fproc *rfp, int fd_nr, ino_t v_inode_nr, endpoint_t v_fs_e, int v_ref_count) {
++	int r = OK;
++	if ((r = mutex_lock(&ex->exclusive_lock)) != OK) return r;
++	for (int i = 0; i < NR_EXCLUSIVE; i++){
++		if (ex->slots[i].v_inode_nr == v_inode_nr && ex->slots[i].v_fs_e == v_fs_e){
++			if (ex->slots[i].is_locked > 0) {
++				if (ex->slots[i].exclusive_locked_fd == fd_nr && ex->slots[i].exclusive_uid == rfp->fp_realuid) {
++					ex->slots[i].is_locked = 0;
++				}
++				else if (ex->slots[i].unlinked && v_ref_count == 1) {
++					ex->slots[i].is_locked = 0;
++				}
++			}
++			break;
++		}
++	}
++
++	mutex_unlock(&ex->exclusive_lock);
++	return r;
++}
++
++int exclusive_unmount(struct exclusive *ex, struct vmnt *vmp) {
++	int r = OK;
++	if ((r = mutex_lock(&ex->exclusive_lock)) != OK) return r;
++	for (int i = 0; i < NR_EXCLUSIVE; i++){
++		if (ex->slots[i].v_vmnt == vmp){
++			ex->slots[i].is_locked = 0;
++		}
++	}
++	mutex_unlock(&ex->exclusive_lock);
++	return r;
++}
++
++/* should be executed with ref_count = 1 if this is the last ref */
++int exclusive_unlink(struct exclusive *ex, ino_t v_inode_nr, endpoint_t v_fs_e, int v_ref_count) {
++	int r = OK;
++	if ((r = mutex_lock(&ex->exclusive_lock)) != OK) return r;
++	for (int i = 0; i < NR_EXCLUSIVE; i++){
++		if (ex->slots[i].v_inode_nr == v_inode_nr && ex->slots[i].v_fs_e == v_fs_e){
++			ex->slots[i].unlinked = 1;
++			if (v_ref_count == 1) ex->slots[i].is_locked = 0;
++		}
++	}
++	mutex_unlock(&ex->exclusive_lock);
++	return r;
++}
+\ No newline at end of file
+diff -rupNEZbB original_sources/usr/src/minix/servers/vfs/link.c sources/usr/src/minix/servers/vfs/link.c
+--- original_sources/usr/src/minix/servers/vfs/link.c	2014-09-13 23:56:50.000000000 +0200
++++ sources/usr/src/minix/servers/vfs/link.c	2023-06-18 19:53:55.806044254 +0200
+@@ -101,6 +101,9 @@ int do_unlink(void)
+   int r;
+   char fullpath[PATH_MAX];
+   struct lookup resolve, stickycheck;
++  ino_t inode_nr;
++  endpoint_t fs_e;
++  int ref_count;
+ 
+   if (copy_path(fullpath, sizeof(fullpath)) != OK)
+ 	return(err_code);
+@@ -128,9 +131,6 @@ int do_unlink(void)
+ 	return(r);
+   }
+ 
+-  /* Also, if the sticky bit is set, only the owner of the file or a privileged
+-     user is allowed to unlink */
+-  if ((dirp->v_mode & S_ISVTX) == S_ISVTX) {
+ 	/* Look up inode of file to unlink to retrieve owner */
+ 	lookup_init(&stickycheck, resolve.l_path, PATH_RET_SYMLINK, &vmp2, &vp);
+ 	stickycheck.l_vmnt_lock = VMNT_READ;
+@@ -138,8 +138,17 @@ int do_unlink(void)
+ 	vp = advance(dirp, &stickycheck, fp);
+ 	assert(vmp2 == NULL);
+ 	if (vp != NULL) {
+-		if (vp->v_uid != fp->fp_effuid && fp->fp_effuid != SU_UID)
++    inode_nr = vp->v_inode_nr;
++    fs_e = vp->v_fs_e;
++    ref_count = vp->v_ref_count;
++
++    /* Also, if the sticky bit is set, only the owner of the file or a privileged
++      user is allowed to unlink */
++		if (vp->v_uid != fp->fp_effuid && fp->fp_effuid != SU_UID
++        && (dirp->v_mode & S_ISVTX) == S_ISVTX)
+ 			r = EPERM;
++    if (check_exclusive_locked(&exclusive, fp, vp->v_inode_nr, vp->v_fs_e) != OK)
++      r = EACCES;
+ 		unlock_vnode(vp);
+ 		put_vnode(vp);
+ 	} else
+@@ -150,7 +159,7 @@ int do_unlink(void)
+ 		put_vnode(dirp);
+ 		return(r);
+ 	}
+-  }
++  
+ 
+   upgrade_vmnt_lock(vmp);
+ 
+@@ -161,6 +170,11 @@ int do_unlink(void)
+   unlock_vnode(dirp);
+   unlock_vmnt(vmp);
+   put_vnode(dirp);
++
++  if (r == OK && vp != NULL){
++    exclusive_unlink(&exclusive, inode_nr, fs_e, ref_count);
++  }
++
+   return(r);
+ }
+ 
+@@ -171,13 +185,16 @@ int do_rename(void)
+ {
+ /* Perform the rename(name1, name2) system call. */
+   int r = OK, r1;
+-  struct vnode *old_dirp = NULL, *new_dirp = NULL, *new_dirp_l = NULL, *vp;
+-  struct vmnt *oldvmp, *newvmp, *vmp2;
++  struct vnode *old_dirp = NULL, *new_dirp = NULL, *new_dirp_l = NULL, *vp, *vp2;
++  struct vmnt *oldvmp, *newvmp, *vmp2, *vmp3;
+   char old_name[PATH_MAX];
+   char fullpath[PATH_MAX];
+   struct lookup resolve, stickycheck;
+   vir_bytes vname1, vname2;
+   size_t vname1_length, vname2_length;
++  ino_t inode_nr;
++  endpoint_t fs_e;
++  int ref_count;
+ 
+   vname1 = job_m_in.m_lc_vfs_link.name1;
+   vname1_length = job_m_in.m_lc_vfs_link.len1;
+@@ -193,9 +210,6 @@ int do_rename(void)
+   if (fetch_name(vname1, vname1_length, fullpath) != OK) return(err_code);
+   if ((old_dirp = last_dir(&resolve, fp)) == NULL) return(err_code);
+ 
+-  /* If the sticky bit is set, only the owner of the file or a privileged
+-     user is allowed to rename */
+-  if ((old_dirp->v_mode & S_ISVTX) == S_ISVTX) {
+ 	/* Look up inode of file to unlink to retrieve owner */
+ 	lookup_init(&stickycheck, resolve.l_path, PATH_RET_SYMLINK, &vmp2, &vp);
+ 	stickycheck.l_vmnt_lock = VMNT_READ;
+@@ -203,8 +217,13 @@ int do_rename(void)
+ 	vp = advance(old_dirp, &stickycheck, fp);
+ 	assert(vmp2 == NULL);
+ 	if (vp != NULL) {
+-		if(vp->v_uid != fp->fp_effuid && fp->fp_effuid != SU_UID)
++  /* If the sticky bit is set, only the owner of the file or a privileged
++     user is allowed to rename */
++		if((old_dirp->v_mode & S_ISVTX) == S_ISVTX &&
++      (vp->v_uid != fp->fp_effuid && fp->fp_effuid != SU_UID))
+ 			r = EPERM;
++    if (check_exclusive_locked(&exclusive, fp, vp->v_inode_nr, vp->v_fs_e) != OK)
++      r = EACCES;
+ 		unlock_vnode(vp);
+ 		put_vnode(vp);
+ 	} else
+@@ -215,7 +234,6 @@ int do_rename(void)
+ 		put_vnode(old_dirp);
+ 		return(r);
+ 	}
+-  }
+ 
+   /* Save the last component of the old name */
+   if (strlen(fullpath) >= sizeof(old_name)) {
+@@ -255,9 +273,30 @@ int do_rename(void)
+       (r1 = forbidden(fp, new_dirp, W_BIT|X_BIT)) != OK) r = r1;
+ 
+   if (r == OK) {
++    // check exclusive for vname2
++    lookup_init(&resolve, fullpath, PATH_RET_SYMLINK, &vmp3, &vp2);
++    resolve.l_vmnt_lock = VMNT_READ;
++    resolve.l_vnode_lock = VNODE_READ;
++
++    vp2 = advance(new_dirp, &resolve, fp);
++    if (vp2 != NULL){
++      inode_nr = vp->v_inode_nr;
++      fs_e = vp->v_fs_e;
++      ref_count = vp->v_ref_count;
++
++      r = check_exclusive_locked(&exclusive, fp, vp2->v_inode_nr, vp2->v_fs_e);
++      unlock_vnode(vp2);
++      put_vnode(vp2);
++    }
++  }
++
++  if (r == OK) {
+ 	upgrade_vmnt_lock(oldvmp); /* Upgrade to exclusive access */
+ 	r = req_rename(old_dirp->v_fs_e, old_dirp->v_inode_nr, old_name,
+ 		       new_dirp->v_inode_nr, fullpath);
++    if (vp2 != NULL){
++      exclusive_unlink(&exclusive, inode_nr, fs_e, ref_count);
++    }
+   }
+ 
+   unlock_vnode(old_dirp);
+@@ -373,6 +412,9 @@ off_t newsize;
+   assert(tll_locked_by_me(&vp->v_lock));
+   if (!S_ISREG(vp->v_mode) && !S_ISFIFO(vp->v_mode)) return(EINVAL);
+ 
++  if (check_exclusive_locked(&exclusive, fp, vp->v_inode_nr, vp->v_fs_e) != OK)
++    return EACCES;
++
+   /* We must not compare the old and the new size here: this function may be
+    * called for open(2), which requires an update to the file times if O_TRUNC
+    * is given, even if the file size remains the same.
+diff -rupNEZbB original_sources/usr/src/minix/servers/vfs/Makefile sources/usr/src/minix/servers/vfs/Makefile
+--- original_sources/usr/src/minix/servers/vfs/Makefile	2014-09-13 23:56:50.000000000 +0200
++++ sources/usr/src/minix/servers/vfs/Makefile	2023-06-08 12:12:31.962444330 +0200
+@@ -7,7 +7,8 @@ SRCS=	main.c open.c read.c write.c pipe.
+ 	filedes.c stadir.c protect.c time.c \
+ 	lock.c misc.c utility.c select.c table.c \
+ 	vnode.c vmnt.c request.c \
+-	tll.c comm.c worker.c coredump.c
++	tll.c comm.c worker.c coredump.c \
++	exclusive.c
+ 
+ .if ${MKCOVERAGE} != "no"
+ SRCS+=  gcov.c
+diff -rupNEZbB original_sources/usr/src/minix/servers/vfs/mount.c sources/usr/src/minix/servers/vfs/mount.c
+--- original_sources/usr/src/minix/servers/vfs/mount.c	2014-09-13 23:56:50.000000000 +0200
++++ sources/usr/src/minix/servers/vfs/mount.c	2023-06-18 18:15:04.896915922 +0200
+@@ -511,6 +511,8 @@ int unmount(
+ 	printf("VFS: ignoring failed umount attempt FS endpoint: %d (%d)\n",
+ 	       vmp->m_fs_e, r);
+ 
++  exclusive_unmount(&exclusive, vmp);
++
+   if (is_nonedev(vmp->m_dev)) free_nonedev(vmp->m_dev);
+ 
+   if (label != NULL) strlcpy(label, vmp->m_label, LABEL_MAX);
+diff -rupNEZbB original_sources/usr/src/minix/servers/vfs/open.c sources/usr/src/minix/servers/vfs/open.c
+--- original_sources/usr/src/minix/servers/vfs/open.c	2014-09-13 23:56:50.000000000 +0200
++++ sources/usr/src/minix/servers/vfs/open.c	2023-06-18 19:52:45.599651641 +0200
+@@ -142,7 +143,7 @@ int common_open(char path[PATH_MAX], int
+   /* Only do the normal open code if we didn't just create the file. */
+   if (exist) {
+ 	/* Check protections. */
+-	if ((r = forbidden(fp, vp, bits)) == OK) {
++	if ((r = forbidden(fp, vp, bits)) == OK && (r = check_exclusive_locked(&exclusive, fp, vp->v_inode_nr, vp->v_fs_e)) == OK) {
+ 		/* Opening reg. files, directories, and special files differ */
+ 		switch (vp->v_mode & S_IFMT) {
+ 		   case S_IFREG:
+@@ -683,9 +684,12 @@ int fd_nr;
+ 
+   /* First locate the vnode that belongs to the file descriptor. */
+   if ( (rfilp = get_filp2(rfp, fd_nr, VNODE_OPCL)) == NULL) return(err_code);
+-
+   vp = rfilp->filp_vno;
+ 
++  ino_t inode_nr = vp->v_inode_nr;
++  endpoint_t fs_e = vp->v_fs_e;
++  int ref_count = vp->v_ref_count;
++
+   /* first, make all future get_filp2()'s fail; otherwise
+    * we might try to close the same fd in different threads
+    */
+@@ -709,5 +713,7 @@ int fd_nr;
+ 		lock_revive();	/* one or more locks released */
+   }
+ 
++  exclusive_unlock_on_close(&exclusive, rfp, fd_nr, inode_nr, fs_e, ref_count);
++
+   return(OK);
+ }
+diff -rupNEZbB original_sources/usr/src/minix/servers/vfs/proto.h sources/usr/src/minix/servers/vfs/proto.h
+--- original_sources/usr/src/minix/servers/vfs/proto.h	2014-09-13 23:56:50.000000000 +0200
++++ sources/usr/src/minix/servers/vfs/proto.h	2023-06-18 19:44:58.969307943 +0200
+@@ -16,6 +16,7 @@ struct fproc;
+ struct timespec;
+ struct vmnt;
+ struct vnode;
++struct exclusive;
+ struct lookup;
+ struct worker_thread;
+ struct job;
+@@ -348,4 +349,15 @@ void worker_wait(void);
+ struct worker_thread *worker_suspend(void);
+ void worker_resume(struct worker_thread *org_self);
+ void worker_set_proc(struct fproc *rfp);
++
++/* exclusive.c */
++int do_exclusive(void);
++int do_fexclusive(void);
++int exclusive_vnode(struct fproc *rfp, struct vnode *vp, int flags, int fd);
++
++int check_exclusive_locked(struct exclusive *ex, struct fproc *rfp, ino_t v_inode_nr, endpoint_t v_fs_e);
++int exclusive_unlock_on_close(struct exclusive *ex, struct fproc *rfp, int fd_nr, ino_t v_inode_nr, endpoint_t v_fs_e, int v_ref_count);
++int exclusive_unmount(struct exclusive *ex, struct vmnt *vmp);
++int exclusive_unlink(struct exclusive *ex, ino_t v_inode_nr, endpoint_t v_fs_e, int v_ref_count);
++
+ #endif
+diff -rupNEZbB original_sources/usr/src/minix/servers/vfs/read.c sources/usr/src/minix/servers/vfs/read.c
+--- original_sources/usr/src/minix/servers/vfs/read.c	2014-09-13 23:56:50.000000000 +0200
++++ sources/usr/src/minix/servers/vfs/read.c	2023-06-18 19:46:33.729589100 +0200
+@@ -102,6 +102,12 @@ int actual_read_write_peek(struct fproc
+ 
+   assert(f->filp_count > 0);
+ 
++  if (check_exclusive_locked(&exclusive, rfp, 
++  		f->filp_vno->v_inode_nr, f->filp_vno->v_fs_e) != OK) {
++	unlock_filp(f);
++	return (EACCES);
++  }
++
+   if (((f->filp_mode) & (ro ? R_BIT : W_BIT)) == 0) {
+ 	unlock_filp(f);
+ 	return(EBADF);
+diff -rupNEZbB original_sources/usr/src/minix/servers/vfs/table.c sources/usr/src/minix/servers/vfs/table.c
+--- original_sources/usr/src/minix/servers/vfs/table.c	2014-09-13 23:56:50.000000000 +0200
++++ sources/usr/src/minix/servers/vfs/table.c	2023-06-08 12:12:31.962444330 +0200
+@@ -65,4 +65,6 @@ int (* const call_vec[NR_VFS_CALLS])(voi
+ 	CALL(VFS_COPYFD)	= do_copyfd,		/* copyfd(2) */
+ 	CALL(VFS_CHECKPERMS)	= do_checkperms,	/* checkperms(2) */
+ 	CALL(VFS_GETSYSINFO)	= do_getsysinfo,	/* getsysinfo(2) */
++	CALL(VFS_EXCLUSIVE)	= do_exclusive,		/* exclusive() */
++	CALL(VFS_FEXCLUSIVE)	= do_fexclusive,	/* fexclusive() */
+ };
+diff -rupNEZbB original_sources/usr/src/minix/servers/vfs/vnode.c sources/usr/src/minix/servers/vfs/vnode.c
+--- original_sources/usr/src/minix/servers/vfs/vnode.c	2014-09-13 23:56:50.000000000 +0200
++++ sources/usr/src/minix/servers/vfs/vnode.c	2023-06-18 19:22:13.929082651 +0200
+@@ -146,6 +146,17 @@ void init_vnodes(void)
+ 	vp->v_mapfs_count = 0;
+ 	tll_init(&vp->v_lock);
+   }
++  
++  mutex_init(&exclusive.exclusive_lock, NULL);
++  for (int i = 0; i < NR_EXCLUSIVE; i++){
++    exclusive.slots[i].v_fs_e = NONE;
++    exclusive.slots[i].v_inode_nr = 0;
++    exclusive.slots[i].is_locked = 0;
++    exclusive.slots[i].unlinked = 0;
++    exclusive.slots[i].exclusive_uid = 0;
++    exclusive.slots[i].exclusive_locked_fd = -1;
++    exclusive.slots[i].v_vmnt = NULL;
++  }
+ }
+ 
+ /*===========================================================================*
+diff -rupNEZbB original_sources/usr/src/minix/servers/vfs/vnode.h sources/usr/src/minix/servers/vfs/vnode.h
+--- original_sources/usr/src/minix/servers/vfs/vnode.h	2014-09-13 23:56:50.000000000 +0200
++++ sources/usr/src/minix/servers/vfs/vnode.h	2023-06-18 19:22:08.241546187 +0200
+@@ -22,6 +22,22 @@ EXTERN struct vnode {
+   tll_t v_lock;			/* three-level-lock */
+ } vnode[NR_VNODES];
+ 
++
++EXTERN struct exclusive {
++  mutex_t exclusive_lock;
++
++  struct exclusive_slot {
++    endpoint_t v_fs_e;
++    ino_t v_inode_nr;
++    int is_locked;  /* 0 means the slot is empty */
++    int unlinked; /* after everyone stops using vnode it should be released */
++    uid_t exclusive_uid;
++    uid_t owner_uid;
++    int exclusive_locked_fd;
++    struct vmnt *v_vmnt; /* to handle unmount easily */
++  } slots[NR_EXCLUSIVE];
++} exclusive;
++
+ /* vnode lock types mapping */
+ #define VNODE_NONE TLL_NONE	/* used only for get_filp2 to avoid locking */
+ #define VNODE_READ TLL_READ
+diff --git a/usr/src/sys/sys/fcntl.h b/usr/src/sys/sys/fcntl.h
+index 6caaf29..65095df 100644
+--- a/usr/src/sys/sys/fcntl.h
++++ b/usr/src/sys/sys/fcntl.h
+@@ -301,6 +301,13 @@ struct flock {
+ #define	AT_REMOVEDIR		0x800	/* Remove directory only */
+ #endif
+ 
++/*
++ * Constants for exclusive lock.
++ */
++#define EXCL_UNLOCK				1	/* Unlock. */
++#define EXCL_UNLOCK_FORCE		2	/* Forced unlock by privileged users. */
++#define EXCL_LOCK				4	/* Lock unconditionally. */
++#define EXCL_LOCK_NO_OTHERS		8	/* Lock if no other users have this file opened. */
+ 
+ #ifndef _KERNEL
+ #include <sys/cdefs.h>
