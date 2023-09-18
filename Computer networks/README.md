@@ -64,12 +64,13 @@ Przykład użycia:
 ./sikradio-receiver | play -t raw -c 2 -r 44100 -b 16 -e signed-integer --buffer $((128)) -
 ```
 
-## Text interface
-To connect to receiver interface use telnet:
+## Interfejs tekstowy
+Interfejs tekstowy jest dostępny po podłączeniu się do portu TCP.
 ```
 telnet localhost 18709
 ```
-The interface looks like this:
+
+Przykładowy ekran:
 ```
 ------------------------------------------------------------------------
 
