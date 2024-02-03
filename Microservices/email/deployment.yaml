@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: email-deployment
+  labels:
+    app: email
+spec:
+  selector:
+    matchLabels:
+      app: email
+  template:
+    metadata:
+      labels:
+        app: email
+    spec:
+      containers:
+      - name: email
+        image: wojtekrzeplinski/email-go-image
+        envFrom:
+            - secretRef:
+                name: gmail-secret
+            - configMapRef:
+                name: common-config
+            - configMapRef:
+                name: redis-config

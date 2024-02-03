@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: website-deployment
+  labels:
+    app: website
+spec:
+  selector:
+    matchLabels:
+      app: website
+  template:
+    metadata:
+      labels:
+        app: website
+    spec:
+      containers:
+      - name: website
+        image: wojtekrzeplinski/website-nextjs-image
+        ports:
+        - containerPort: 3000
+        envFrom:
+            - configMapRef:
+                name: common-config
+
