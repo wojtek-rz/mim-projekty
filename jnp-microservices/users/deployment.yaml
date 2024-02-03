@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-deployment
+  labels:
+    app: users
+spec:
+  selector:
+    matchLabels:
+      app: users
+  template:
+    metadata:
+      labels:
+        app: users
+    spec:
+      containers:
+      - name: users
+        image: wojtekrzeplinski/users-go-image
+        ports:
+        - containerPort: 8000
+        env:
+        - name: APP_PORT
+          value: "8000"
+        envFrom:
+            - configMapRef:
+                name: postgres-config
+            - configMapRef:
+                name: redis-config
+            - configMapRef:
+                name: common-config

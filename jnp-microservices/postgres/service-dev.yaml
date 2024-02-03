@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-dev # Sets service name
+  labels:
+    app: postgres # Labels and Selectors
+spec:
+  type: LoadBalancer # Sets service type
+  ports:
+    - port: 5555 # Sets port to run the postgres application
+      targetPort: 5432 # Sets target port to run the postgres application
+  selector:
+    app: postgres
