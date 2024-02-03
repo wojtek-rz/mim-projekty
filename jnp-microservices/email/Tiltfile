@@ -1,3 +1,0 @@
-docker_build('wojtekrzeplinski/email-go-image', '.', dockerfile='Dockerfile')
-k8s_yaml('deployment.yaml')
-k8s_resource('email-deployment')

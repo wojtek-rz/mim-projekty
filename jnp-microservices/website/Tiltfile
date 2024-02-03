@@ -1,3 +1,0 @@
-docker_build('wojtekrzeplinski/website-nextjs-image', '.', dockerfile='Dockerfile')
-k8s_yaml('deployment.yaml')
-k8s_resource('website-deployment', port_forwards=8003)
