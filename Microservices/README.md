@@ -1,23 +1,22 @@
-# Newsletter manager
-
+# Newsletter Manager
 [![Technologies](https://skillicons.dev/icons?i=go,nextjs,docker,kubernetes,redis,postgres,gcp)](https://skillicons.dev)
 
-Projekt na zaliczenie kursu JNP 2 "Architektura i infrastruktura mikroserwisów w aplikacjach internetowych" na UW.
+Project for the completion of the JNP2 course "Microservices Architecture and Infrastructure in Web Applications" at the University of Warsaw.
 
-## Opis
+## Description
 
-System jest podzielony na następujące mikroserwisy:
+The system is divided into the following microservices:
 
-- `newsletters` - serwis zarządzający newsletterami za pomocą REST API
-- `users` - serwis zarządzający użytkownikami oraz autoryzacją
-- `email` - serwis wysyłający maile z newsletterami, wykorzystuje kolejnę Redis
-- `website` - serwis dostarczający frontend aplikacji 
+- `newsletters` - a service managing newsletters using a REST API
+- `users` - a service managing users and authentication
+- `email` - a service sending emails with newsletters, utilizing a Redis queue
+- `website` - a service providing the frontend of the application
 
-Serwisy backendowe są napisane w języku Go, a strona internetowa we frameworku Next.js. Wykorzystuje ona generowanie statycznych stron po stronie serwera, co zapewnia większe bezpieczeństwo oraz mniejsze opóźnienie.
+The backend services are written in Go, and the website is developed using the Next.js framework. It employs server-side rendering for generating static pages, ensuring greater security and reduced latency.
 
-Całość jest zdockeryzowana oraz skonfigurowana do uruchomienia w środowisku Kubernetes. Na potrzeby projektu został utworzony klaster w Google Cloud Platform.
+The entire system is containerized with Docker and configured to run in a Kubernetes environment. For this project, a cluster was created on the Google Cloud Platform.
 
-Komunikacja odbywa się na dwa sposoby: synchronicznie za pomocą REST API oraz asynchronicznie za pomocą kolejki na bazie danych Redis. Ponadto do przechowywania trwałych danych wykorzystywana jest baza danych PostgreSQL.
+Communication occurs in two ways: synchronously through REST API and asynchronously through a Redis-based queue. Additionally, a PostgreSQL database is used for persistent data storage.
 
 <!-- add image from networking/architecture.png -->
 ![Architecture](networking/architecture.png "Architektura systemu")
