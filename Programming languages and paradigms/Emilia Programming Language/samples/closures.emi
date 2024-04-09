@@ -1,0 +1,17 @@
+code:
+    make_adder := (value | int) -> (int) -> int:
+        adder := (x | int) -> int:
+            return value + x
+        
+        return adder
+
+    add_five := make_adder(5)
+    add_ten := make_adder(10)
+    print(add_five(100))
+    f := chain(add_five, add_ten)
+    print(f(100)) // Prints 115. 
+
+chain := (f | (int) -> int, g | (int) -> int) -> (int) -> int:
+    fg := (x | int) -> int:
+        return f(g(x))
+    return fg

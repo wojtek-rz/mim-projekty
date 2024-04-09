@@ -1,0 +1,7 @@
+debug := True
+cpu_cores := 12
+multi_core := cpu_cores && !debug // Parse error, "and" on int and bool.
+estimated_time := 1000 / (cpu_cores * 2)
+
+code:
+    pass

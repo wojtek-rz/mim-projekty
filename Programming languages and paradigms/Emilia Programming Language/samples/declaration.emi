@@ -1,0 +1,7 @@
+counter := 0 // deklaracja zmiennej
+arch := "x86_64-pc-linux-gnu" // musi być inicjalizacja
+debug := false // typ wzięty z wartości inicjowanej
+
+code:
+    coutner <- counter + 1 // operacja przypisania
+    print_logs := debug // czy inferencja typów jest prosta do zaimplementowania?

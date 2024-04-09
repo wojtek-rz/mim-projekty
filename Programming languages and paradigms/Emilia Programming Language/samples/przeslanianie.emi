@@ -1,0 +1,18 @@
+x := 20
+
+code:
+    modify_local_x() // Wypisze 101.
+    print(x) // Wypisze 20.
+    modify_global_x() // Wypisze 45.
+
+modify_global_x := () -> void:
+    x <- x + 25
+    print(x)
+
+modify_local_x := () -> void:
+    x := 1
+    x <- x + 100
+    print(x)
+
+return_date := () -> string:
+    return "Today"

@@ -1,0 +1,17 @@
+code:
+    first := chain((x | int) -> (x * 2 | int),
+          (x | int) -> (x + 5 | int))
+
+    second := chain((x | int) -> (x * 2 | int),
+        (x | int) -> ({
+            if x > 10: {return 0}
+            else: {return 1}
+        } | int))
+
+    print(first(10)) // 30
+
+
+chain := (f | (int) -> int, g | (int) -> int) -> (int) -> int:
+    fg := (x | int) -> int:
+        return f(g(x))
+    return fg
