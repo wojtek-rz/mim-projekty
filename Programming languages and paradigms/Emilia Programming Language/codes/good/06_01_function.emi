@@ -1,0 +1,9 @@
+power := (n | Int) -> Int:
+    acc := 1
+    counter := 1
+    while counter <= n:
+        acc <- acc * counter
+        counter <- counter + 1
+    return acc
+
+printInt(power(5)) // 120

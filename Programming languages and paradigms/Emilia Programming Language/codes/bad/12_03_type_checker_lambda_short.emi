@@ -1,0 +1,6 @@
+printResult := (fun | (Int) -> Int, arg | Int) -> Int:
+    res := fun(arg)
+    printInt(res)
+
+printResult((x | Int) -> Int (x + 10000 + y), 1) // y not declared
+

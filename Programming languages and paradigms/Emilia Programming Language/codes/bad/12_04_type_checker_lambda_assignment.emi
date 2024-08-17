@@ -1,0 +1,4 @@
+addZero := (n | Int) -> Int:
+    return n + 0
+    
+addZero <- (n | Int) -> Bool (False)  // Error: return type mismatch

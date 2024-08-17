@@ -1,0 +1,2 @@
+wrongRetType := () -> Void:
+    return 5

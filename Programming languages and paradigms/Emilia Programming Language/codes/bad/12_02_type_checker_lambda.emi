@@ -1,0 +1,5 @@
+printResult := (fun | (Int) -> Int, arg | Int) -> Int:
+    res := fun(arg)
+    printInt(res)
+
+printResult((x | Int) -> Int: { nonExistentFunction(); return 10; }, 1) // nonExistentFunction is not defined

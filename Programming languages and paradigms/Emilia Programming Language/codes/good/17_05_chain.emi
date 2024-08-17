@@ -1,0 +1,12 @@
+identity := (x | Int) -> Int (x)
+
+chainFuns := (f | (Int) -> Int, g | (Int) -> Int) -> (Int) -> Int:
+    chain := (x | Int) -> Int:
+        return f(g(x))
+    return chain
+
+
+chainedFun := chainFuns((x | Int) -> Int (2 * x), 
+                        (x | Int) -> Int (21 + x))
+
+printInt(chainedFun(0)) // should be 42

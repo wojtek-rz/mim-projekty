@@ -1,0 +1,7 @@
+printBool(51 = 51)
+printBool("Ala ma kota" = "Ala ma kota")
+printBool(False = False)
+
+printBool(51 != 51)
+printBool("Ala ma kota" != "Ala ma kota")
+printBool(False != False)

@@ -1,0 +1,4 @@
+printBool(51 > 3)
+printBool(51 >= 3)
+printBool(51 < 3)
+printBool(51 <= 3)

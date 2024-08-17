@@ -1,0 +1,4 @@
+myFunc := (x | Int, y | Str, z | Bool) -> Void:
+    z := x + 15
+
+myFunc(15, "abc", 0)

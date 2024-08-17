@@ -1,0 +1,18 @@
+fibonacci := (n | Int) -> Int:
+    if n = 0:
+        return 0
+    if n = 1:
+        return 1
+    return fibonacci(n - 1) + fibonacci(n - 2)
+
+result := fibonacci(10)
+printStr("Fib(10) = " ++ intToStr(result))
+
+callRecurrence := (fun | * (Int) -> Int, arg | Int) -> Int:
+    printStr("Calling recurrence...")
+    result := fun(arg)
+    printStr("Result = " ++ intToStr(result))
+    printStr("End of recurrence call.")
+    return result
+
+callRecurrence(fibonacci, 11)

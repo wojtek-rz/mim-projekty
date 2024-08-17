@@ -1,0 +1,11 @@
+// Go to the store and buy milk. If they have eggs, buy six.
+
+milk_bought := 1
+eggs_bought := 0
+eggs_in_store := True
+
+if eggs_in_store:
+    milk_bought <- 6
+
+printStr("Milk bought: " ++ intToStr(milk_bought))
+printStr("Eggs bought: " ++ intToStr(eggs_bought))

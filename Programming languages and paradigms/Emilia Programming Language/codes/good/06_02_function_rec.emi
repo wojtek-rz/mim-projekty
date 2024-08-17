@@ -1,0 +1,7 @@
+power := (n | Int) -> Int:
+    if n = 1:
+        return 1
+    else:
+        return n * power(n - 1)
+
+printInt(power(5)) // 120

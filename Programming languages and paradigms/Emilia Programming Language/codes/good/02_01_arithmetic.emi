@@ -1,0 +1,5 @@
+printInt(51 + 3)
+printInt(51 - 3)
+printInt(51 * 3)
+printInt(51 / 3)
+printInt(51 % 3)

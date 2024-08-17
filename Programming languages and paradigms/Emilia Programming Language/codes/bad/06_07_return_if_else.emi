@@ -1,0 +1,5 @@
+f := () -> Int:
+    if True:
+        return 0
+    else:
+        printStr("no return...")

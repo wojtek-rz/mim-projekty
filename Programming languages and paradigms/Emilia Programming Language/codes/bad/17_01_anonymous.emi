@@ -1,0 +1,1 @@
+wrongRetType := () -> Str (5 + 15)

@@ -1,8 +1,0 @@
-code:
-    if age > 18:
-        print("Pass")
-    else:
-        i := 15
-        while i > 0:
-            i <-i - 1
-            print("...")

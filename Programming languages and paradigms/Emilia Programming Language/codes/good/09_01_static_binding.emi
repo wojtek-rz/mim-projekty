@@ -1,0 +1,21 @@
+name := "Zenobia"
+getEmail := (name | Str) -> Str:
+    return name ++ "@pizza.pl"
+
+
+greet := () -> Void:
+    printStr("Hello " ++ name ++ ", " ++ getEmail(name))
+
+main := () -> Void:
+    name := "Local Stefania"
+    getEmail := (name | Str) -> Str:
+        return name ++ "@pasta.pl"
+
+    greet()
+
+    name <- "Unknown"
+
+
+main() // Should print "Hello Zenobia, Zenobia@pizza.pl"
+printStr("Global name should remain unchanged")
+printStr(name) // Should print "Zenobia"

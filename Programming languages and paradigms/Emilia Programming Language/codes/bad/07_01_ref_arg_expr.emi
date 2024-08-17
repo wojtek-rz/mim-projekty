@@ -1,0 +1,4 @@
+setToZero := (x | * Int) -> Void:
+    x <- 0
+
+setToZero(100 + 300 + 20)

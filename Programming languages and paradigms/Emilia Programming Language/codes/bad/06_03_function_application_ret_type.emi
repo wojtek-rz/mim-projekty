@@ -1,0 +1,6 @@
+myFunc := (x | Int, y | Str, z | Bool) -> Int:
+    z := x + 15
+    return z
+
+x := myFunc(15, "abc", False)
+printStr(x)

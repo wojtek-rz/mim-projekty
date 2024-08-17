@@ -1,36 +1,22 @@
 entrypoints Program ;
 
-ProgramMain.     Program ::= [VarDecl] MainFunc [FuncDecl];
-
-separator  VarDecl "\n" ;
-separator  FuncDecl "\n" ;
-
-DeclVar.   Decl ::= VarDecl ;
-VarDeclaration.   VarDecl ::= Ident ":=" Expr ;
-
-DeclFunc.  Decl ::= FuncDecl ;
-FuncDeclaration.  FuncDecl ::= Ident ":=" "(" [Arg] ")" "->" Type ":" Block ;
-
-MainFunction.  MainFunc ::= "code" ":" Block;
-
-ValuArg. 	   Arg ::= Ident "|" Type;
-RefArg. 	   Arg ::= Ident "|" "*" Type;
-
-separator  Arg "," ;
+layout toplevel ;
+ProgramMain.     Program ::= [Stmt];
 
 layout ":" ;
 
+
 -- statements ----------------------------------------------
 
-Block.     Block ::= "{" [Stmt] "}" ;
+StmtBlock. Block ::= "{" [Stmt] "}" ;
 
 separator  Stmt ";" ;
 
-Assign.    Stmt ::= Ident "<-" Expr ;
+Decl.  Stmt ::= Ident ":=" Expr ;
 
 Pass.      Stmt ::= "pass" ;
 
-Decl.      Stmt ::= Decl ;
+Assign.    Stmt ::= Ident "<-" Expr ;
 
 Cond.      Stmt ::= "if" Expr ":" Block ; 
 
@@ -40,7 +26,7 @@ layout stop "else" ;
 
 While.     Stmt ::= "while" Expr ":" Block ;
 
-StmtApp.   Stmt ::= Ident "(" [Expr] ")" ;
+ExprStmt.  Stmt ::=  Expr ;
 
 Ret.       Stmt ::= "return" Expr ;
 
@@ -54,26 +40,36 @@ EVar.      Expr6 ::= Ident ;
 
 ELitInt.   Expr6 ::= Integer ;
 
-ELitTrue.  Expr6 ::= "true" ;
+ELitTrue.  Expr6 ::= "True" ;
 
-ELitFalse. Expr6 ::= "false" ;
+ELitFalse. Expr6 ::= "False" ;
 
-ELambda.   Expr6 ::= "(" [Arg] ")" "->" "(" Expr "|" Type  ")";
-ELambda2.   Expr6 ::= "(" [Arg] ")" "->" "(" Block "|" Type  ")";
+FunArg.    Arg ::= Ident "|" ArgType;
+separator  Arg "," ;
+
+ELambdaShort.  Expr6 ::= "(" [Arg] ")" "-> " Type " (" Expr ")";
+
+ELambda.   Expr6 ::= "(" [Arg] ")" "->" Type ":" Block;
 
 EApp.      Expr6 ::= Ident "(" [Expr] ")" ;
 
 EString.   Expr6 ::= String ;
 
+Concat.    Expr5 ::= Expr5 "++" Expr6 ;
+
 Neg.       Expr5 ::= "-" Expr6 ;
 
-Not.       Expr5 ::= "!" Expr6 ;
+Not.       Expr5 ::= "not " Expr6 ;
 
 EMul.      Expr4 ::= Expr4 MulOp Expr5 ;
 
 EAdd.      Expr3 ::= Expr3 AddOp Expr4 ;
 
 ERel.      Expr2 ::= Expr2 RelOp Expr3 ;
+
+EEquals.   Expr2 ::= Expr2 "=" Expr3 ;
+
+ENequals.  Expr2 ::= Expr2 "!=" Expr3 ;
 
 EAnd.      Expr1 ::= Expr2 "&&" Expr1 ;
 
@@ -85,17 +81,21 @@ separator  Expr "," ;
 
 -- types --------------------------
 
-Int.       Type ::= "int" ;
+Int.       Type ::= "Int" ;
 
-Str.       Type ::= "string" ;
+Str.       Type ::= "Str" ;
 
-Bool.      Type ::= "bool" ;
+Bool.      Type ::= "Bool" ;
 
-Void.      Type ::= "void" ;
+Void.      Type ::= "Void" ;
 
-Fun.       Type ::= "(" [Type] ")" "->" Type ;
+Fun.       Type ::= "(" [ArgType] ")" "->" Type ;
 
-separator  Type "," ;
+separator  ArgType "," ;
+
+ValueArgType.  ArgType ::= Type ;
+
+RefArgType.    ArgType ::= "*" Type ;
 
 -- operators ----------------------
 
@@ -116,10 +116,6 @@ LE.        RelOp ::= "<=" ;
 GTH.       RelOp ::= ">" ;
 
 GE.        RelOp ::= ">=" ;
-
-EQU.       RelOp ::= "==" ;
-
-NE.        RelOp ::= "!=" ;
 
 -- comments ------------------------------------------------
 

@@ -1,0 +1,8 @@
+x := 100
+
+while x > 0:
+    y := 300
+    printStr("Should not execute")
+    x <- x - 1
+
+printInt(y)

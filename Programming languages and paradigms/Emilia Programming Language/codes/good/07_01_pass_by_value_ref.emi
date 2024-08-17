@@ -1,0 +1,22 @@
+account1 := 100
+account2 := 1000
+
+transactionFee := 2
+
+transferMoney := (sourceAccount | * Int, destAccount | * Int, amount | Int) -> Void:
+    sourceAccount <- sourceAccount - amount - transactionFee
+    destAccount <- destAccount + amount
+
+transfer := 50
+printStr("transfer of " ++ intToStr(transfer) ++ 
+         " from account1 to account2 (with fee of " ++ 
+         intToStr(transactionFee) ++ ")")
+printStr("Before transaction")
+printInt(account1)
+printInt(account2)
+
+transferMoney(account1, account2, transfer)
+
+printStr("After transaction")
+printInt(account1)
+printInt(account2)

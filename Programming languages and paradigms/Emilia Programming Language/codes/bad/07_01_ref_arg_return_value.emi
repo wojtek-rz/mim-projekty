@@ -1,0 +1,7 @@
+getName := () -> Str:
+    return "Arbuz Dumbledore"
+
+sayHello := (msg | * Str) -> Void:
+    msg <- "Hello world!"
+
+sayHello(getName())

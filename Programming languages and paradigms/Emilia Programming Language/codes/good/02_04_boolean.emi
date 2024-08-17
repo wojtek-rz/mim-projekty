@@ -1,0 +1,3 @@
+printBool(not False)
+printBool(False && True)
+printBool(False || True)

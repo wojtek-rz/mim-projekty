@@ -1,0 +1,17 @@
+x := "Global x"
+
+function2 := (printMainX | () -> Void) -> Void:
+    x := "Function2 x"
+    printStr("Should be printed: Main x")
+    printMainX()
+
+
+main := () -> Void:
+    x := "Main x"
+
+    printMainX := () -> Void:
+        printStr(x)
+
+    function2(printMainX) // should print "Main x"
+
+main()

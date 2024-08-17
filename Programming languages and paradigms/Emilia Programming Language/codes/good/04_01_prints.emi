@@ -1,0 +1,11 @@
+printStr(
+    "Świat nie wierzy łzom\n" ++
+    "Szkoda naszych łez\n" ++ 
+    "Świat nie wierzy łzom\n" ++
+    "Bo za dużo jest...\n" ++
+    "Na tym świecie łez\n"
+)
+
+printInt(1001)
+
+printBool(False)

@@ -1,0 +1,4 @@
+x := "Ala ma kota"
+y := 15
+
+z := x + y

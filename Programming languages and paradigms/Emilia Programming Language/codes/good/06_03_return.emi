@@ -1,0 +1,15 @@
+sayHello := () -> Str:
+    printStr("Should be printed")
+    return "ok"
+    0 / 0
+    printStr("Should not be printed")
+
+sayHello()
+
+sayHelloToVoid := () -> Void:
+    printStr("Should be printed")
+    return
+    0 / 0
+    printStr("Should not be printed")
+
+sayHelloToVoid()

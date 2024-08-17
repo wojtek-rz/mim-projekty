@@ -1,0 +1,13 @@
+name := "Zenobia"
+name <- "Hello " ++ name
+name <- name ++ "!!!"
+
+counter := 0
+counter <- counter + 100
+
+condition := False
+condition := condition || True
+
+printStr(name)
+printInt(counter)
+printBool(condition)

@@ -1,0 +1,17 @@
+result := 1000
+
+applyToResult := (fun | (Int) -> Int) -> Void:
+    result <- fun(result)
+
+getResultModifier := () -> (Int) -> Int:
+    fun := (x | Int) -> Int:
+        return x * 5
+    
+    return fun
+
+printInt(result)
+
+applyToResult(getResultModifier())
+
+printStr("After applyToResult:")
+printInt(result)

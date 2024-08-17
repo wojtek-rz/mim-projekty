@@ -1,0 +1,90 @@
+cabal-version: 2.2
+
+-- This file has been generated from package.yaml by hpack version 0.36.0.
+--
+-- see: https://github.com/sol/hpack
+
+name:           emilia-lang
+version:        1.0.0
+description:    Please see the README on GitHub at <https://github.com/wojtek-rz/mim-projekty>
+homepage:       https://github.com/wojtek-rz/mim-projekty#readme
+bug-reports:    https://github.com/wojtek-rz/mim-projekty/issues
+author:         Wojciech Rzepliński
+maintainer:     Wojciech Rzepliński
+copyright:      2024 Wojciech Rzepliński
+license:        BSD-3-Clause
+build-type:     Simple
+extra-source-files:
+    README.md
+
+source-repository head
+  type: git
+  location: https://github.com/wojtek-rz/mim-projekty
+
+library
+  exposed-modules:
+      Bnfc.Abs
+      Bnfc.Layout
+      Bnfc.Lex
+      Bnfc.Par
+      Bnfc.Print
+      Builtins
+      Evaluator.Builtins
+      Evaluator.Evaluator
+      Evaluator.Exceptions
+      Evaluator.LangData
+      Exceptions
+      Interpreter
+      TypeChecker.Exceptions
+      TypeChecker.LangTypes
+      TypeChecker.Monad
+      TypeChecker.TypeChecker
+      TypeChecker.Utils
+  other-modules:
+      Paths_emilia_lang
+  autogen-modules:
+      Paths_emilia_lang
+  hs-source-dirs:
+      src
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , containers
+    , mtl
+  default-language: Haskell2010
+
+executable emilia-lang-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_emilia_lang
+  autogen-modules:
+      Paths_emilia_lang
+  hs-source-dirs:
+      app
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , containers
+    , emilia-lang
+    , mtl
+  default-language: Haskell2010
+
+test-suite emilia-lang-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_emilia_lang
+  autogen-modules:
+      Paths_emilia_lang
+  hs-source-dirs:
+      test
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , containers
+    , emilia-lang
+    , mtl
+  default-language: Haskell2010

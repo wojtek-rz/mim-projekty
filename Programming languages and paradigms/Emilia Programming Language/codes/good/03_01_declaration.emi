@@ -1,0 +1,10 @@
+intVal1 := 0
+intVal2 := 10
+boolVal1 := True
+boolVal2 := False
+strVal1 := "Hello "
+strVal2 := "Zenobia"
+
+printInt(intVal1 + intVal2)
+printBool(boolVal1 || boolVal2)
+printStr(strVal1 ++ strVal2)

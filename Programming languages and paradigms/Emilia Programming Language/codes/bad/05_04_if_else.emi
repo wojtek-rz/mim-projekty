@@ -1,0 +1,8 @@
+x := True
+
+if x:
+    y := 200
+else:
+    y := 50
+
+printInt(y)

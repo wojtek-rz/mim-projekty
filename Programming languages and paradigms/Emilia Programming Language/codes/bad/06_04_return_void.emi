@@ -1,0 +1,2 @@
+wrongRetType := () -> Str:
+    return

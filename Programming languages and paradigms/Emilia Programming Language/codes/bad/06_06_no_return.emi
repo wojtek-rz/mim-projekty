@@ -1,0 +1,6 @@
+f := () -> Int:
+    if False:
+        return 0
+
+    pass
+

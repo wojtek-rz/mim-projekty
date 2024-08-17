@@ -1,0 +1,10 @@
+makeAdder := (val | Int) -> (Int) -> Int:
+    add := (x | Int) -> Int:
+        return x + val 
+    return add
+
+add_four := makeAdder(4)
+add_two := makeAdder(2)
+
+printStr("The answer to life, the universe, and everything:")
+printInt(add_four(0) * 10 + add_two(0))
