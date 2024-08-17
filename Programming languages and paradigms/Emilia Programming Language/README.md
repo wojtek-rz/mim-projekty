@@ -1,6 +1,4 @@
-# Opis języka
-### __Autor__: Wojciech Rzepliński (438709)
-
+# Emilia Programming Language
 
 Język Emilia jest imperatywnym językiem programowania podobnym do języka Python, wzbogaconym o statyczne typowanie i uproszczony system inferencji typów. Cechuje się wysoką czytelnoscią, którą zapewniają między innymi typy oraz oryginalne elementy składniowe. Program jest listą instrukcji wykonywaną sekwencyjnie, a instrukcje mogą być deklaracjami zmiennych. 
 
