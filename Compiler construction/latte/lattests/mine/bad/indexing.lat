@@ -1,0 +1,6 @@
+
+
+int main(){
+    int[] b = new int[10];
+    b["abc"] = -1;
+}

@@ -1,0 +1,13 @@
+class Abc {
+    int a;
+    int b; 
+    int c;
+}
+
+int main(){
+    Abc abc = new Abc;
+    abc.a = 0;
+    int[] b = new int[10];
+    b[abc.b] = -1;
+    b[abc.b] = "abc";
+}

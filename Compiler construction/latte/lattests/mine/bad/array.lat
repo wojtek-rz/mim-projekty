@@ -1,0 +1,8 @@
+int main(){
+    int[] a;
+    int b;
+
+    printInt(a [ 5 ] );
+    b [ 5 ] ;
+    return 0;
+}

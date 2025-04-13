@@ -1,0 +1,6 @@
+int main() {
+    string s1 = "hejka";
+    string s2 = "abc" + s1;
+    printString(s2);
+    return 0;
+}

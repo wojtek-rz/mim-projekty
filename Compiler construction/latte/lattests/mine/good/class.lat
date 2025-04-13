@@ -1,0 +1,16 @@
+class Rect {
+    int width;
+    int height;
+    int[] callback;
+    Rect next;
+    string[] msg;
+}
+
+class Screen {
+    Rect rect;
+    string info;
+}
+
+int main() {
+    return 0;
+}

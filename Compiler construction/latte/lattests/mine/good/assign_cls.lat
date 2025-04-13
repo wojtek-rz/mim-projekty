@@ -1,0 +1,26 @@
+class Rect {
+    int height;
+    int width;
+    string name;
+}
+
+void printRectangle(Rect rect) {
+    printInt(rect.height);
+    printInt(rect.width);
+    printString(rect.name);
+}
+
+Rect createRectangle() {
+    Rect rect = new Rect;
+    rect.height = 20;
+    rect.width = 30;
+    rect.name = "Emilka";
+
+    return rect;
+}
+
+int main () {
+    Rect r = createRectangle();
+    printRectangle(r);
+    return 0;
+}

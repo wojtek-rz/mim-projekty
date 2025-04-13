@@ -1,0 +1,27 @@
+
+int [] createArr() {
+    int[] arr = new int[3];
+    arr[0] = 0;
+    arr[1] = 1;
+    arr[2] = 2;
+    arr[1]++;
+    arr[1]++;
+    return arr;
+}
+
+void printArr(int[] arr, int size) {
+    int i = 0;
+    while (i < size) {
+        printInt(arr[i]);
+        i++;
+    }
+}
+
+int main() {
+    int[] a = new int[10];
+    a[0] = 20;
+
+    int[] b = createArr();
+    printArr(b, 3);
+    return 0;
+}

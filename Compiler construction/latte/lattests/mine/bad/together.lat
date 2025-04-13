@@ -1,0 +1,14 @@
+class Test {
+    int[] a;
+    int[] b;
+    Test c;
+}
+
+int main() {
+    Test x;
+
+    x . c . a [20];
+    x . c . c . c . b [30];
+    x . c . c [20] ;
+    return 0;
+}

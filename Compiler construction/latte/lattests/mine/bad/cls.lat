@@ -1,0 +1,17 @@
+class Abc {
+    int a;
+    int b; 
+    int c;
+}
+
+int main(){
+    Abc abc;
+    abc.a;
+    abc.b;
+    abc.c;
+
+    abc.d;
+
+    return 0;
+}
+

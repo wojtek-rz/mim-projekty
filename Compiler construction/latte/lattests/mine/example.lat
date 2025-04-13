@@ -1,0 +1,4 @@
+int main(){
+    printString("\"h\"");
+    return 0;
+}

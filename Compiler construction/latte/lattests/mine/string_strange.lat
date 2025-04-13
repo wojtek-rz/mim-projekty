@@ -1,0 +1,21 @@
+boolean f() {
+    return true;
+}
+
+int main() {
+    string s3;
+    {
+        string s1 = "a";
+        string s2 = "b";
+
+        if (f()) {
+            s3 = s1;
+        }
+        else {
+            s3 = s2;
+        }
+    }
+    printString(s3);
+
+    return 0;
+}

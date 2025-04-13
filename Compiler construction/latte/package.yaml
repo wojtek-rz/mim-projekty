@@ -1,0 +1,38 @@
+name:                latte
+version:             0.1.0.0
+author:              "Wojciech Rzepliński"
+
+description:         "Latter compiler for Compiler Design course at the University of Warsaw"
+
+dependencies:
+- base >= 4.7 && < 5
+- array
+- containers
+- mtl
+- filepath
+- process
+
+ghc-options:
+# - -Wextra
+# - -Wall
+# - -Wcomp
+- -Widentities
+- -Wincomplete-record-updates
+- -Wincomplete-uni-patterns
+- -Wmissing-home-modules
+- -Wpartial-fields
+- -Wredundant-constraints
+
+library:
+  source-dirs: src
+
+executables:
+  latc_llvm:
+    main:                Main.hs
+    source-dirs:         app
+    # ghc-options:
+    # - -threaded
+    # - -rtsopts
+    # - -with-rtsopts=-N
+    dependencies:
+    - latte

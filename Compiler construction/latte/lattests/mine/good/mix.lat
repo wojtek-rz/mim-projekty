@@ -1,0 +1,68 @@
+class Person {
+    int age;
+    string name;
+    Company comp;
+}
+
+class Company {
+    Person[] staff;
+    string name;
+}
+
+void printPerson(Person p) {
+    printInt(p.age);
+    printString(p.name);
+    printString(p.comp.name);
+}
+
+Person createPerson(int a, string n, Company c) {
+    Person p = new Person;
+    p.age = a;
+    p.name = n;
+    p.comp = c;
+    return p;
+}
+
+Company[] appendCompany(Company[] companies, Company val) {
+    Company[] extended = new Company[companies.length];
+    int i = 0;
+    for (Company c : companies) {
+        extended[i] = c;
+        i++;
+    }
+    extended[i] = val;
+    return extended;
+}
+
+Person[] appendPerson(Person[] people, Person val) {
+    Person[] extended = new Person[people.length + 1];
+    int i = 0;
+    for (Person c : people) {
+        extended[i] = c;
+        i++;
+    }
+    extended[i] = val;
+    return extended;
+}
+
+void printCompany(Company c) {
+    printString(c.name);
+    for (Person p : c.staff ) {
+        printPerson(p);
+    }
+}
+
+int main () {
+    Company netflix = new Company;
+    netflix.name = "netflix";
+    netflix.staff = new Person[0];
+
+    Person adam = createPerson(10, "Adam", netflix);
+    Person michal = createPerson(12, "Michal", netflix);
+
+    netflix.staff = appendPerson(netflix.staff, adam);
+    netflix.staff = appendPerson(netflix.staff, michal);
+
+    printCompany(netflix);
+    return 0;
+}

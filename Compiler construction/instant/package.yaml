@@ -1,0 +1,59 @@
+name:                instant
+version:             0.1.0.0
+author:              "Wojciech Rzepliński"
+
+description:       "Instant compiler for Compiler Design course at the University of Warsaw"
+
+dependencies:
+- base >= 4.7 && < 5
+- array
+- containers
+- mtl
+- filepath
+- process
+- text
+
+ghc-options:
+- -Wextra
+- -Wcompat
+- -Widentities
+- -Wincomplete-record-updates
+- -Wincomplete-uni-patterns
+- -Wmissing-home-modules
+- -Wpartial-fields
+- -Wredundant-constraints
+
+library:
+  source-dirs: src
+
+executables:
+  insc_jvm:
+    main:                JVMMain.hs
+    source-dirs:         app
+    other-modules:       [] # otherwise it will throw an error: File name does not match module name
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - instant
+  insc_llvm:
+    main:                LLVMMain.hs
+    source-dirs:         app
+    other-modules:       []
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - instant
+  interpreter:
+    main:                InterpreterMain.hs
+    source-dirs:         app    
+    other-modules:       []
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - instant

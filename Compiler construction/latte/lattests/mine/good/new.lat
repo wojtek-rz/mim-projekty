@@ -1,0 +1,31 @@
+class Rect {
+    int width;
+    int height;
+    int[] callback;
+    Rect next;
+    string[] msg;
+}
+
+class Screen {
+    Rect rect;
+    string info;
+}
+
+void printScreen(Screen s) {
+    return;
+}
+
+void array() {
+    Screen[] screens = new Screen[10 * 5];
+}
+
+void cls() {
+    Screen screen = new Screen;
+    printScreen(screen);
+}
+
+int main() {
+    array();
+    cls();
+    return 0;
+}
